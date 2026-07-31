@@ -1,0 +1,83 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Product Pages | Warehouse IMS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Products Page</h3>
+
+    <div class="card border shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-auto">
+                    <label class="form-label small text-muted">Search</label>
+                    <input type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Search SKU or product..."
+                        value="{{ request.GET.q }}"
+                        style="min-width: 280px;">
+                </div>
+
+                <div class="col-auto ms-auto">
+                    <button class="btn btn-primary">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+        <table class="table align-middle text-center">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Supplier</th>
+                    <th>Unit</th>
+                    <th>Current Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                   <td>{{ p.sku }}</td>
+                   <td>{{ p.name }}</td>
+                   <td>{{ p.category }}</td>
+                   <td>{{ p.supplier }}</td>
+                   <td>{{ p.unit }}</td>
+                   <td>{{ p.current_stock }}</td>
+                   <td>
+                       {% if p.current_stock == 0 %}
+                        <span class="badge bg-danger">Out of Stock</span>
+                       {% elif p.current_stock <= p.low_stock %}
+                        <span class="badge bg-warning">Low Stock</span>
+                       {% else %}
+                        <span class="badge bg-success">In Stock</span>
+                       {% endif %}
+                   </td>
+
+                    <td>
+                        <a href="#" class="btn btn-sm btn-info">
+                            View
+                        </a>
+
+                        <a href="#" class="btn btn-sm btn-danger">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No products found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

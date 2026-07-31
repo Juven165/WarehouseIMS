@@ -1,0 +1,28 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}View Transaction Detail{% endblock %}
+
+{% block content %}
+<div class="container">
+   <div class="card shadow">
+       <div class="card-header bg-primary text-white">
+           View Transactions
+       </div>
+       <div class="card-body">
+           <p><strong>Date:</strong>{{ transaction.transaction_date|date:"F d, Y h:i A" }}</p>
+           <p><strong>Product:</strong>{{ transaction.product.name }}</p>
+           <p><strong>Supplier:</strong>
+               {% if transaction.product.supplier %}
+                {{ transaction.product.supplier.name }}
+               {% else %}
+                    —
+               {% endif %}
+           </p>
+           <p><strong>Quantity:</strong>{{ transaction.quantity }}</p>
+       </div>
+       <div class="card-footer text-end">
+           <a href="{% url 'staff_dashboard' %}">Back</a>
+       </div>
+   </div>
+</div>
+{% endblock %}

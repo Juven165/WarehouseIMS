@@ -1,0 +1,37 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Categories | Warehouse IMS{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h3>Categories</h3>
+
+    <div class="table-responsive mt-4">
+        <table class="table align-middle text-center">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                    <th>Total Products</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for c in category %}
+                <tr>
+                    <td>{{ c.name }}</td>
+                </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No categories found...</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

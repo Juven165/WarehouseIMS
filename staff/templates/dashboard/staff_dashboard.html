@@ -1,0 +1,146 @@
+{% extends 'main/base_staff.html' %}
+
+{% load static %}
+
+{% block title %}Staff Dashboard | Warehouse IMS{% endblock %}
+
+{% block content %}
+<style>
+    .title h3 {
+        font-size: 30px;
+    }
+     .title .warehouse {
+        font-size: 15px;
+     }
+
+    .card {
+        padding: 24px;
+        border-radius:14px;
+        justify-content:space-between;
+        align-items: center;
+        transition:0.25s ease;
+    }
+
+    .card i {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .card h3 {
+        margin-top: 5px;
+        margin-bottom: 0;
+        font-weight: 600;
+    }
+</style>
+<div class="container-fluid">
+
+    <div class="title">
+        <div class="text-group">
+            <h3>Staff Dashboard</h3>
+            <div class="warehouse">
+                Warehouse IMS
+            </div>
+        </div>
+    </div>
+
+    <!-- FIRST ROW -->
+    <div class="row g-4 mt-2">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm text-center bg-white">
+                <i class="bi bi-box-seam"></i>
+                <div>Total Products</div>
+                <h3>{{ total_products }}</h3>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm text-center bg-white">
+                <i class="bi bi-boxes"></i>
+                <div>Total Stock</div>
+                <h3>{{ total_stock }}</h3>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm text-center bg-white">
+                <i class="bi bi-exclamation-triangle"></i>
+                <div>Low Stock Products</div>
+                <h3>{{ low_stock_products }}</h3>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm text-center bg-white">
+                <i class="bi bi-x-circle"></i>
+                <div>Out of Stock</div>
+                <h3>{{ out_of_stock }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- SECOND ROW -->
+    <div class="row g-4 mt-1">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm text-center bg-white">
+                <i class="bi bi-arrow-left-right"></i>
+                <div>Today's Transactions</div>
+                <h3>{{ todays_transactions  }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4 mb-3">Recent Transactions</h3>
+
+    <div class="table-responsive">
+        <table class="table align-middle text-center">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in recent_transactions %}
+                <tr>
+                    <td>{{ app.transaction_date|date:"M d, Y h:i A" }}</td>
+                    <td>{{ app.product.name }}</td>
+                    <td>
+                        {% if app.product.supplier %}
+                            {{ app.product.supplier.name }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ app.get_transaction_type_display }}</td>
+                    <td>{{ app.quantity }}</td>
+
+                    <td>
+                        <a href="{% url 'delete_transactions' app.id %}" class="btn btn-sm btn-info">
+                            View
+                        </a>
+
+                        <a href="{% url 'view_transactions' app.id %}" class="btn btn-sm btn-danger">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="6">No recent transactions.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

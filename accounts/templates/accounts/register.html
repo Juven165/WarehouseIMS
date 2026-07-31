@@ -1,0 +1,242 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | Warehouse IMS</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            font-family: "Poppins", sans-serif;
+        }
+
+        .register-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .card {
+            background: #334155;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 45px 40px;
+            width: 100%;
+            max-width: 430px;
+            text-align: center;
+            color: #fff;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+         from { opacity: 0; transform: translateY(20px); }
+         to { opacity: 1; transform: translateY(0px); }
+        }
+
+        .register-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .text {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 54px;
+            padding: 15px 45px 15px 50px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background: rgba(255,255,255,.95);
+            color: #333;
+            font-size: .95rem;
+            line-height: 1.2;
+            transition: all .3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00c851;
+            box-shadow: 0 0 0 3px rgba(0, 200, 81, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: transparent;
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 0.9rem;
+            pointer-events: none;
+            transition: all 0.2s ease-in-out;
+            background: transparent;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: 5px;
+            left: 45px;
+            font-size: 0.75rem;
+            color: #007bff;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 6px;
+            border-radius: 5px;
+        }
+
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 18px;
+            transform: translateY(-50%);
+            color: #007bff;
+            font-size: 1.1rem;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color:#fff;
+        }
+
+        .btn-register:hover{
+            background: linear-gradient(90deg, #1D4ED8, #2563EB);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(37,99,235,.35);
+        }
+
+        .btn-register:active{
+            transform: scale(.98);
+        }
+
+        .links {
+           color: #fff;
+           text-decoration: none;
+        }
+
+        .links a:hover {
+           text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-wrapper">
+        <div class="card">
+            <h3 class="register-title mb-2"><i class="bi bi-person-plus-fill me-2"></i>Register</h3>
+            <p class="text">
+                Create your <strong>Warehouse IMS</strong> account.
+            </p>
+
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <i class="bi bi-person input-icon"></i>
+                    {{ form.username|attr:"placeholder: "|add_class:"form-control ps-5" }}
+                    <label for="id_username">Username</label>
+                </div>
+
+                <div class="form-group">
+                    <i class="bi bi-envelope-fill input-icon"></i>
+                    {{ form.email|attr:"placeholder: "|add_class:"form-control ps-5" }}
+                    <label for="id_email">Email</label>
+                </div>
+
+                <div class="form-group">
+                    <i class="bi bi-lock input-icon"></i>
+                    {{ form.password|attr:"placeholder: "|add_class:"form-control ps-5 pe-5" }}
+                    <label for="id_password">Password</label>
+                    <i class="bi bi-eye-slash toggle-password"></i>
+                </div>
+
+                <div class="form-group">
+                    <i class="bi bi-lock-fill input-icon"></i>
+                    {{ form.confirm_password|attr:"placeholder: "|add_class:"form-control ps-5 pe-5" }}
+                    <label for="id_confirm_password">Confirm Password</label>
+                    <i class="bi bi-eye-slash toggle-password"></i>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Register as</label><br>
+                    <div class="border rounded p-2">
+                        {{ form.role }}
+                    </div>
+                </div>
+
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-register">
+                        <i class="bi bi-person-fill me-1"></i> Register
+                    </button>
+                </div>
+
+                <div class="links mt-4">
+                    <p class="p-0">Already have an account?
+                        <a href="{% url 'login' %}" class="fw-semibold">Login</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <script>
+        document.querySelectorAll("input").forEach(input => {
+            if (!input.placeholder) input.placeholder = "";
+        });
+
+        document.querySelectorAll(".toggle-password").forEach(icon => {
+            icon.addEventListener("click", () => {
+                const input = icon.parentElement.querySelector("input");
+                input.type = input.type === "password" ? "text" : "password";
+                icon.classList.toggle("bi-eye");
+                icon.classList.toggle("bi-eye-slash");
+            });
+        });
+    </script>
+</body>
+</html>
+
