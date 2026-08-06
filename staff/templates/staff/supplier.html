@@ -1,0 +1,148 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Supplier | Warehouse IMS{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h3 class="mb-4">Supplier</h3>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle text-center">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                    <th width="180">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for s in suppliers %}
+
+                <tr>
+
+                    <td>{{ s.name }}</td>
+
+                    <td>{{ s.contact_person }}</td>
+
+                    <td>{{ s.email }}</td>
+
+                    <td>{{ s.address }}</td>
+
+                    <!-- Notes -->
+
+                    <td>
+
+                        {% if s.notes == "reliable" %}
+
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Reliable
+                            </span>
+
+                        {% elif s.notes == "preferred" %}
+
+                            <span class="badge bg-primary">
+                                <i class="bi bi-star-fill"></i>
+                                Preferred
+                            </span>
+
+                        {% elif s.notes == "late" %}
+
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-clock-fill"></i>
+                                Late Delivery
+                            </span>
+
+                        {% elif s.notes == "blacklisted" %}
+
+                            <span class="badge bg-danger">
+                                <i class="bi bi-x-circle-fill"></i>
+                                Blacklisted
+                            </span>
+
+                        {% elif s.notes == "new" %}
+
+                            <span class="badge bg-info text-dark">
+                                <i class="bi bi-person-plus-fill"></i>
+                                New Supplier
+                            </span>
+
+                        {% else %}
+
+                            <span class="text-muted">-</span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- Status -->
+
+                    <td>
+
+                        {% if s.is_active %}
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                Inactive
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+                    <!-- Action -->
+
+                    <td>
+
+                        <a href="#" class="btn btn-info btn-sm">
+
+                            <i class="bi bi-eye"></i>
+
+                            View
+
+                        </a>
+
+                        <a href="#" class="btn btn-danger btn-sm">
+
+                            <i class="bi bi-trash"></i>
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="7" class="text-center text-muted py-4">
+
+                        No suppliers found.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+{% endblock %}

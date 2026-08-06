@@ -20,9 +20,9 @@ class Product(models.Model):
 
 class StockTransaction(models.Model):
     STAFF_CHOICES = [
-        'In Stock', 'In Stock',
-        'Low Stock', 'Low Stock',
-        'Out Stock', 'Out Stock',
+        ("In Stock", "In Stock"),
+        ("Low Stock", "Low Stock"),
+        ("Out Stock", "Out Stock"),
     ]
 
     STOCK_IN = "Stock In"
@@ -49,14 +49,33 @@ class StockTransaction(models.Model):
         return f"{self.product.name} - {self.transaction_type} ({self.quantity})"
 
 class Supplier(models.Model):
+    SUPPLIER_NOTES = [
+        ("reliable", "Reliable"),
+        ("preferred", "Preferred"),
+        ("late", "Late Delivery"),
+        ("blacklisted", "Blacklisted"),
+        ("new", "New Supplier"),
+    ]
+
     name = models.CharField(max_length=200)
     contact_person = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
     address = models.TextField(blank=True)
 
+    is_active = models.BooleanField(default=True)
+
+    notes = models.CharField(
+        max_length=30,
+        choices=SUPPLIER_NOTES,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return f'{self.name} {self.contact_person} {self.phone} {self.email}'
+        return self.name
 
 class Category(models.Model):
     name = models.CharField(max_length=200)

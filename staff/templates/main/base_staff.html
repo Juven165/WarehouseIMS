@@ -186,8 +186,8 @@
             <i class="bi bi-grid"></i> Categories
         </a>
 
-        <a href="#"
-            class="{% if request.resolver_match.url_name == '#' %}active{% endif %}">
+        <a href="{% url 'supplier' %}"
+            class="{% if request.resolver_match.url_name == 'supplier' %}active{% endif %}">
             <i class="bi bi-truck"></i> Suppliers
         </a>
 
