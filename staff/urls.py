@@ -7,5 +7,6 @@ urlpatterns = [
     path('staff/view-transactions/<int:transaction_id>/', views.view_transaction, name='view_transactions'),
     path('staff/product/', views.product, name='staff_product'),
     path('staff/categories/', views.categories, name='categories'),
-    path('staff/supplier', views.supplier, name='supplier')
+    path('staff/supplier', views.supplier, name='supplier'),
+    path('staff/stock-in', views.stock_in, name='stock_in'),
 ]

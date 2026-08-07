@@ -1,0 +1,73 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Stock In | Warehouse IMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="mb-0"><i class="bi bi-box-seam"></i> Stock In</h5>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="product" class="form-label">
+                                Product <span class="text-danger">*</span>
+                            </label>
+
+                            <select id="product" name="product" class="form-select" required>
+                                <option value="">-- Select Product --</option>
+
+                                {% for product in products %}
+                                    <option value="{{ product.id }}">
+                                        {{ product.name }} ({{ product.sku }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Quantity <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" name="quantity" class="form-control" min="1" required placeholder="Enter quantity">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Supplier <span class="text-danger">*</span>
+                            </label>
+
+                            <select name="supplier" class="form-select" required>
+                                <option value="">-- Select Supplier --</option>
+                                {% for supplier in suppliers %}
+                                    <option value="supplier.id">{{ supplier.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date Received</label>
+                            <input type="date" name="reference_no" class="form-control" placeholder="Optional...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <input type="text" name="notes" class="form-control" rows="3" placeholder="Optional notes...">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-check-circle"></i> Submit Stock In
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

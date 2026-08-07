@@ -1,10 +1,11 @@
 from django.contrib.messages.context_processors import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum, F, Q, Count
+from django.db.models import Sum, F, Q
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
 from staff.models import Product, StockTransaction, Category, Supplier
+from .forms import StockInForm
 
 @login_required
 def staff_dashboard(request):
@@ -32,10 +33,16 @@ def staff_dashboard(request):
         transaction_date__date=today
     ).count()
 
-    recent_transactions = product_transactions.select_related(
-        'product',
-        'product__supplier'
-    ).order_by('-transaction_date')[:5]
+    recent_transactions = (
+        StockTransaction.objects
+        .select_related(
+            'product',
+            'product__supplier',
+            'supplier',
+            'staff'
+        )
+        .order_by('-transaction_date')[:5]
+    )
 
     context = {
         'total_products': total_products,
@@ -109,7 +116,7 @@ def supplier(request):
     total_suppliers = suppliers.count()
 
     return render(request, 'staff/supplier.html', {
-        'suppliers': supplier,
+        'suppliers': suppliers,
         'total_suppliers': total_suppliers
     })
 
@@ -129,3 +136,36 @@ def view_supplier_detail(request, supplier_id):
     supplier = get_object_or_404(Supplier, id=supplier_id)
 
     return render(request, 'staff/supplier_detail.html', {'supplier': supplier})
+
+@login_required
+def stock_in(request):
+    recent_transaction = StockTransaction.objects.filter(
+        transaction_type="Stock In"
+    ).order_by('-transaction_date')[:10]
+
+    if request.method == 'POST':
+        form = StockInForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.transaction_type = "Stock In"
+            transaction.staff = request.user
+            transaction.save()
+
+            # Update the product stock
+            product = transaction.product
+            product.current_stock += transaction.quantity
+            product.save()
+
+            messages.success(request, f"Stock In successful for {product.name}!")
+            return redirect('stock_in')
+    else:
+        form = StockInForm()
+
+    context = {
+        'form': form,
+        'recent_transaction': recent_transaction,
+    }
+    return render(request, 'staff/stock_in.html', context)
+
+
+

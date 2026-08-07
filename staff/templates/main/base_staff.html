@@ -193,8 +193,8 @@
 
         <h6>TRANSACTIONS</h6>
 
-        <a href="#"
-            class="{% if request.resolver_match.url_name == '#' %}active{% endif %}">
+        <a href="{% url 'stock_in' %}"
+            class="{% if request.resolver_match.url_name == 'stock_in' %}active{% endif %}">
             <i class="bi bi-box-arrow-in-down"></i> Stock In
         </a>
 

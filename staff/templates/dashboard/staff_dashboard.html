@@ -123,11 +123,14 @@
                     <td>{{ app.quantity }}</td>
 
                     <td>
-                        <a href="{% url 'delete_transactions' app.id %}" class="btn btn-sm btn-info">
+                        <a href="{% url 'view_transactions' app.id %}"
+                           class="btn btn-sm btn-info">
                             View
                         </a>
 
-                        <a href="{% url 'view_transactions' app.id %}" class="btn btn-sm btn-danger">
+                        <a href="{% url 'delete_transactions' app.id %}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete this transaction?')">
                             Delete
                         </a>
                     </td>

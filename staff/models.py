@@ -43,6 +43,8 @@ class StockTransaction(models.Model):
     quantity = models.PositiveIntegerField()
     staff = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     notes = models.TextField(max_length=500, blank=True)
+    supplier = models.ForeignKey("Supplier", on_delete=models.SET_NULL, null=True)
+    reference_no = models.CharField(max_length=50, blank=True, null=True)
     transaction_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
