@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
 from staff.models import Product, StockTransaction, Category, Supplier
-from .forms import StockInForm
+from .forms import StockInForm, StockOutForm
+
 
 @login_required
 def staff_dashboard(request):
@@ -139,9 +140,12 @@ def view_supplier_detail(request, supplier_id):
 
 @login_required
 def stock_in(request):
-    recent_transaction = StockTransaction.objects.filter(
+    recent_transactions = StockTransaction.objects.filter(
         transaction_type="Stock In"
-    ).order_by('-transaction_date')[:10]
+    ).select_related('product', 'supplier').order_by('-transaction_date')[:10]
+
+    products = Product.objects.all()
+    suppliers = Supplier.objects.filter(is_active=True)
 
     if request.method == 'POST':
         form = StockInForm(request.POST)
@@ -151,7 +155,7 @@ def stock_in(request):
             transaction.staff = request.user
             transaction.save()
 
-            # Update the product stock
+            # Update stock
             product = transaction.product
             product.current_stock += transaction.quantity
             product.save()
@@ -163,9 +167,40 @@ def stock_in(request):
 
     context = {
         'form': form,
-        'recent_transaction': recent_transaction,
+        'recent_transactions': recent_transactions,
+        'products': products,
+        'suppliers': suppliers,
     }
     return render(request, 'staff/stock_in.html', context)
 
+@login_required
+def stock_out(request):
+    recent_stock_out = (
+        StockTransaction.objects
+        .filter(transaction_type="Stock Out")
+        .select_related('product', 'staff')
+        .order_by('-transaction_date')[:10]
+    )
 
+    if request.method == 'POST':
+        form = StockOutForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.transaction_type = "Stock Out"
+            transaction.staff = request.user
+            transaction.save()
 
+            product = transaction.product
+            product.current_stock -= transaction.quantity
+            product.save()
+
+            messages.success(request, 'Stock successfully deducted!')
+            return redirect('stock_out')
+    else:
+        form = StockOutForm()
+
+    context = {
+        'form': form,
+        'recent_stock_out_trans': recent_stock_out,
+    }
+    return render(request, 'staff/stock_out.html', context)

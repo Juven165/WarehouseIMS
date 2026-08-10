@@ -1,0 +1,100 @@
+{% extends 'main/base_staff.html' %}
+{% load static %}
+
+{% block title %}Stock Out | Warehouse IMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h3 class="mt-2">
+                <span class="badge bg-danger">
+                    <i class="bi bi-arrow-down"></i>
+                </span>
+                Stock Out
+            </h3>
+            <p>Fill the details to record stock leaving the warehouse.</p>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="row">
+                    <!-- Product -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Product *</label>
+                        {{ form.product }}
+                        {% if form.product.errors %}
+                            <div class="text-danger small">{{ form.product.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Quantity *</label>
+                        {{ form.quantity }}
+                        {% if form.quantity.errors %}
+                            <div class="text-danger small">{{ form.quantity.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Notes / Reason</label>
+                    {{ form.notes }}
+                </div>
+
+                <button type="submit" class="btn btn-danger w-100 py-2">
+                    <i class="bi bi-box-arrow-down"></i> Stock Out
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3><i class="bi bi-list-ul text-primary"></i> Recent Stock Out Transactions</h3>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Staff</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stockout in recent_stock_out_trans %}
+                        <tr>
+                            <td>{{ stockout.transaction_date|date:"M d, Y h:i A" }}</td>
+                            <td>
+                                <strong>{{ stockout.product.name }}</strong><br>
+                                <small class="text-muted">{{ stockout.product.sku }}</small>
+                            </td>
+                            <td class="text-danger fw-bold">-{{ stockout.quantity }}</td>
+                            <td>{{ stockout.staff.get_full_name|default:stockout.staff.username }}</td>
+                            <td>{{ stockout.notes|default:"—" }}</td>
+                            <td>
+                                <span class="badge bg-success">Completed</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No recent stock out found...
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

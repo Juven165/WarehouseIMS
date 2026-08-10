@@ -198,8 +198,8 @@
             <i class="bi bi-box-arrow-in-down"></i> Stock In
         </a>
 
-        <a href="#"
-            class="{% if request.resolver_match.url_name == '#' %}active{% endif %}">
+        <a href="{% url 'stock_out' %}"
+            class="{% if request.resolver_match.url_name == 'stock_out' %}active{% endif %}">
             <i class="bi bi-box-arrow-up"></i> Stock Out
         </a>
 
