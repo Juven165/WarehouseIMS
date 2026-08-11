@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
 from staff.models import Product, StockTransaction, Category, Supplier
-from .forms import StockInForm, StockOutForm
+from .forms import StockInForm, StockOutForm, AdjustmentForm
 
 
 @login_required
@@ -204,3 +204,47 @@ def stock_out(request):
         'recent_stock_out_trans': recent_stock_out,
     }
     return render(request, 'staff/stock_out.html', context)
+
+@login_required
+def adjustment(request):
+    recent_adjustments = (
+        StockTransaction.objects
+        .filter(transaction_type="Adjustment")
+        .select_related('product', 'staff')
+        .order_by('-transaction_date')[:10]
+    )
+
+    if request.method == 'POST':
+        form = AdjustmentForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.transaction_type = "Adjustment"
+            transaction.staff = request.user
+
+            product = transaction.product
+            quantity = transaction.quantity
+
+            if transaction.adjustment_type == "Increase":
+                product.current_stock += quantity
+                transaction.save()
+                product.save()
+                messages.success(request, 'Stock successfully increased!')
+                return redirect('adjustment')
+
+            else:  # Decrease
+                if quantity > product.current_stock:
+                    form.add_error('quantity', f'Insufficient stock. Only {product.current_stock} available.')
+                else:
+                    product.current_stock -= quantity
+                    transaction.save()
+                    product.save()
+                    messages.success(request, 'Stock successfully decreased!')
+                    return redirect('adjustment')
+    else:
+        form = AdjustmentForm()
+
+    context = {
+        'recent_adjustments': recent_adjustments,
+        'form': form,
+    }
+    return render(request, 'staff/adjustments.html', context)

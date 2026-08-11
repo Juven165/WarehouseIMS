@@ -1,0 +1,74 @@
+{% extends 'main/base_staff.html' %}
+{% load static %}
+
+{% block title %}Adjustments | Warehouse IMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h3>
+                <span class="badge bg-primary">
+                    <i class="bi bi-sliders"></i>
+                </span>
+                Stock Adjustment
+            </h3>
+            <p class="text-muted">
+                Use this form to adjust stock levels for a product.
+            </p>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="row">
+                    <!-- Product -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Product *</label>
+                        {{ form.product }}
+                        {% if form.product.errors %}
+                            <div class="text-danger small">{{ form.product.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Adjustment Type -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Adjustment Type *</label>
+                        {{ form.adjustment_type }}
+                        {% if form.adjustment_type.errors %}
+                            <div class="text-danger small">{{ form.adjustment_type.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Quantity -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Quantity *</label>
+                        {{ form.quantity }}
+                        {% if form.quantity.errors %}
+                            <div class="text-danger small">{{ form.quantity.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Reason / Notes *</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger small">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 mt-2">
+                    <i class="bi bi-check2-circle"></i> Submit Adjustment
+                </button>
+            </form>
+        </div>
+
+        <div class="card-body">
+
+        </div>
+    </div>
+</div>
+{% endblock %}

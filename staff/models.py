@@ -35,6 +35,22 @@ class StockTransaction(models.Model):
         (ADJUSTMENT, "Adjustment"),
     ]
 
+    ADJUSTMENT_INCREASE = "Increase"
+    ADJUSTMENT_DECREASE = "Decrease"
+
+    ADJUSTMENT_TYPE_CHOICES = [
+        (ADJUSTMENT_INCREASE, "Increase"),
+        (ADJUSTMENT_DECREASE, "Decrease"),
+    ]
+
+    adjustment_type = models.CharField(
+        max_length=10,
+        choices=ADJUSTMENT_TYPE_CHOICES,
+        blank=True,
+        null=True,
+        help_text="Only used when transaction_type is Adjustment"
+    )
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     transaction_type = models.CharField(
         max_length=20,

@@ -203,8 +203,8 @@
             <i class="bi bi-box-arrow-up"></i> Stock Out
         </a>
 
-        <a href="#"
-            class="{% if request.resolver_match.url_name == '#' %}active{% endif %}">
+        <a href="{% url 'adjustment' %}"
+            class="{% if request.resolver_match.url_name == 'adjustment' %}active{% endif %}">
             <i class="bi bi-sliders"></i> Adjustment
         </a>
 
