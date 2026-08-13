@@ -154,7 +154,7 @@
         </div>
 
         <div class="right-section">
-            <form method="post" action="#">
+            <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-logout">
                     <i class="bi bi-box-arrow-right"></i>Logout

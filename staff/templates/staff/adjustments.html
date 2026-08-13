@@ -5,10 +5,12 @@
 
 {% block content %}
 <div class="container-fluid">
+
+    <!-- ========== FORM CARD ========== -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <h3>
-                <span class="badge bg-primary">
+                <span class="badge text-primary">
                     <i class="bi bi-sliders"></i>
                 </span>
                 Stock Adjustment
@@ -21,7 +23,6 @@
                 {% csrf_token %}
 
                 <div class="row">
-                    <!-- Product -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold">Product *</label>
                         {{ form.product }}
@@ -30,7 +31,6 @@
                         {% endif %}
                     </div>
 
-                    <!-- Adjustment Type -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold">Adjustment Type *</label>
                         {{ form.adjustment_type }}
@@ -41,7 +41,6 @@
                 </div>
 
                 <div class="row">
-                    <!-- Quantity -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold">Quantity *</label>
                         {{ form.quantity }}
@@ -50,7 +49,6 @@
                         {% endif %}
                     </div>
 
-                    <!-- Notes -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold">Reason / Notes *</label>
                         {{ form.notes }}
@@ -65,9 +63,60 @@
                 </button>
             </form>
         </div>
+    </div>
 
-        <div class="card-body">
 
+    <!-- ========== RECENT ADJUSTMENTS CARD ========== -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="mb-0"><i class="bi bi-clock-history me-2 text-primary"></i> Recent Adjustments</h3>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Staff</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in recent_adjustments %}
+                        <tr>
+                            <td>{{ item.transaction_date|date:"M d, Y h:i A" }}</td>
+                            <td>
+                                <strong>{{ item.product.name }}</strong><br>
+                                <small class="text-muted">{{ item.product.sku }}</small>
+                            </td>
+                            <td>
+                                {% if item.adjustment_type == "Increase" %}
+                                    <span class="badge bg-success">Increase</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Decrease</span>
+                                {% endif %}
+                            </td>
+                            <td class="{% if item.adjustment_type == 'Increase' %}text-success{% else %}text-danger{% endif %} fw-bold">
+                                {% if item.adjustment_type == "Increase" %}+{% else %}-{% endif %}{{ item.quantity }}
+                            </td>
+                            <td>{{ item.staff.get_full_name|default:item.staff.username }}</td>
+                            <td>{{ item.notes|default:"—" }}</td>
+                            <td><span class="badge bg-primary">Completed</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No recent adjustments found...
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

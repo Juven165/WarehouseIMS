@@ -248,3 +248,27 @@ def adjustment(request):
         'form': form,
     }
     return render(request, 'staff/adjustments.html', context)
+
+@login_required
+def stock_transaction_history(request):
+    transactions = StockTransaction.objects.select_related(
+        'staff', 'supplier', 'product'
+    ).order_by('-transaction_date')
+
+    query = request.GET.get('q', '').strip()
+    transaction_type = request.GET.get('transaction_type', '').strip()
+
+    if query:
+        transactions = transactions.filter(
+            Q(product__name__icontains=query) |
+            Q(product__sku__icontains=query)
+        )
+
+    if transaction_type:
+        transactions = transactions.filter(transaction_type=transaction_type)
+
+    return render(request, "staff/transaction_history.html", {
+        "transactions": transactions,
+        "query": query,
+        "selected_type": transaction_type,
+    })
