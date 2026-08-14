@@ -1,10 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'main/base_staff.html' %}
 
-</body>
-</html>
+{% block title %}Transaction History | Warehouse IMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3>Transaction History</h3>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-auto">
+                    <label class="form-label small text-muted">Search</label>
+                    <input type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Search product..."
+                        value="{{ request.GET.q }}"
+                        style="min-width: 200px"
+                    >
+                </div>
+
+                <div class="col-auto">
+                    <label class="form-label small text-muted">Trans Type</label>
+                    <select id="product" name="product" class="form-select">
+                        <option value="">-- Select Trans Type --</option>
+                        {% for trans in transactions %}
+                            <option value="{{ product.id }}">
+                                {{ product.name }} {{ product.sku }}
+                            </option>
+                        {% endblock %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
