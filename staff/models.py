@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 User = get_user_model()
 
@@ -14,6 +15,7 @@ class Product(models.Model):
     supplier = models.ForeignKey("Supplier", on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.sku} {self.name}'
@@ -23,6 +25,12 @@ class StockTransaction(models.Model):
         ("In Stock", "In Stock"),
         ("Low Stock", "Low Stock"),
         ("Out Stock", "Out Stock"),
+    ]
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Rejected", "Rejected"),
+        ("Approved", "Approved"),
     ]
 
     STOCK_IN = "Stock In"
@@ -62,6 +70,7 @@ class StockTransaction(models.Model):
     supplier = models.ForeignKey("Supplier", on_delete=models.SET_NULL, null=True)
     reference_no = models.CharField(max_length=50, blank=True, null=True)
     transaction_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
         return f"{self.product.name} - {self.transaction_type} ({self.quantity})"

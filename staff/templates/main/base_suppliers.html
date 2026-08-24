@@ -1,10 +1,159 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier | Warehouse IMS</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: #F5F7FA;
+        }
+
+        .logo-section {
+            text-align: center;
+            padding: 15px 15px 10px;
+        }
+
+        .logo-section img {
+            width: 60px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 6px;
+        }
+
+        .logo-section h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .sidebar {
+            background: #FFFFFF;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding: 25px 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
+
+        .sidebar-title {
+            color: #1F2937;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: #374151;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar a:hover {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border-left: 4px solid #93C5FD;
+        }
+
+        .sidebar a.active {
+            background: linear-gradient(90deg, #2563EB, #1D4ED8);
+            color: #FFFFFF;
+            border-left: 4px solid #60A5FA;
+            font-weight: 500;
+        }
+
+        .sidebar a.active i {
+            color: #FFFFFF;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .logout-link {
+            color: #dc3545 !important;  /* force red */
+        }
+
+        .logout-link span {
+            color: #dc3545 !important;
+        }
+
+        .logout-link i {
+            color: #dc3545;
+        }
+    </style>
 </head>
 <body>
+
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="{% static 'images/wims.png' %}" alt="Warehouse IMS Logo">
+            <h3>Warehouse IMS</h3>
+        </div>
+
+        <div class="sidebar-title">
+            <i class="bi bi-person-workspace"></i> Supplier Panel
+        </div>
+
+        <a href="#" class="active">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        <a href="#">
+            <i class="bi bi-truck"></i> My Deliveries
+        </a>
+
+        <a href="#">
+            <i class="bi bi-send-plus"></i> Submit Delivery
+        </a>
+
+        <a href="#">
+            <i class="bi bi-file-earmark-bar-graph"></i> Reports
+        </a>
+
+        <a href="#">
+            <i class="bi bi-person-circle"></i> Profile
+        </a>
+
+        <a href="{% url 'login' %}"
+            class="logout-link {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 
 </body>
 </html>

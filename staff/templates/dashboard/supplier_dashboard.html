@@ -1,0 +1,222 @@
+{% extends 'main/base_suppliers.html' %}
+
+{% block title %}Supplier Dashboard | Warehouse IMS{% endblock %}
+
+{% block content %}
+
+<style>
+    .dashboard-header {
+        margin-bottom: 25px;
+    }
+
+    .dashboard-header h3 {
+        font-size: 30px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .dashboard-header p {
+        margin: 5px 0 0;
+        color: #6B7280;
+        font-size: 14px;
+    }
+
+    .dashboard-card {
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 10px;
+        padding: 25px;
+        min-height: 150px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        transition: all 0.25s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .dashboard-card .icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 12px;
+    }
+
+    .dashboard-card .icon-box i {
+        font-size: 23px;
+    }
+
+    .dashboard-card .card-label {
+        color: #4B5563;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .dashboard-card .card-number {
+        color: #111827;
+        font-size: 25px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    /* Total Deliveries */
+    .delivery-icon {
+        background: #EFF6FF;
+        color: #2563EB;
+    }
+
+    /* Pending */
+    .pending-icon {
+        background: #FFF7ED;
+        color: #EA580C;
+    }
+
+    /* Completed */
+    .completed-icon {
+        background: #ECFDF5;
+        color: #059669;
+    }
+</style>
+
+
+<div class="container-fluid">
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h3>Supplier Dashboard</h3>
+        <p>Overview of your delivery activities.</p>
+    </div>
+
+
+    <!-- Dashboard Cards -->
+    <div class="row g-4">
+
+        <!-- Total Deliveries -->
+        <div class="col-xl-4 col-md-6">
+            <div class="dashboard-card shadow-sm">
+
+                <div class="icon-box delivery-icon">
+                    <i class="bi bi-truck"></i>
+                </div>
+
+                <div class="card-label">
+                    Total Deliveries
+                </div>
+
+                <h4 class="card-number">
+                    {{ total_deliveries|default:"0" }}
+                </h4>
+
+            </div>
+        </div>
+
+
+        <!-- Pending -->
+        <div class="col-xl-4 col-md-6">
+            <div class="dashboard-card shadow-sm">
+
+                <div class="icon-box pending-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+
+                <div class="card-label">
+                    Pending
+                </div>
+
+                <h4 class="card-number">
+                    {{ pending_count|default:"0" }}
+                </h4>
+
+            </div>
+        </div>
+
+
+        <!-- Completed -->
+        <div class="col-xl-4 col-md-6">
+            <div class="dashboard-card shadow-sm">
+
+                <div class="icon-box completed-icon">
+                    <i class="bi bi-check-square-fill"></i>
+                </div>
+
+                <div class="card-label">
+                    Completed
+                </div>
+
+                <h4 class="card-number">
+                    {{ approved_count|default:"0" }}
+                </h4>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header">
+            <h3 class="mb-0">Recent Deliveries</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Reference No</th>
+                            <th>Notes</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for del in recent_deliveries %}
+                        <tr>
+                            <td>{{ del.transaction_date|date:"M d, Y h:i A" }}</td>
+                            <td>{{ del.product.name }}</td>
+                            <td>{{ del.quantity }}</td>
+                            <td>
+                                {% if del.status == "Approved" %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif del.status == "Pending" %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ del.reference_no|default:"—" }}</td>
+                            <td>{{ del.notes|default:"—" }}</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-muted text-center py-4">
+                                No recent deliveries found...
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
