@@ -60,5 +60,6 @@ class SupplierMyDeliveries(LoginRequiredMixin, TemplateView):
         context['pending_count'] = transactions.filter(status='Pending').count()
         context['approved_count'] = transactions.filter(status='Approved').count()
         context['rejected_count'] = transactions.filter(status='Rejected').count()
+        context['recent_deliveries'] = transactions.order_by('-transaction_date')[:10]
 
         return context

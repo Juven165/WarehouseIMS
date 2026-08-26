@@ -3,35 +3,148 @@
 {% block title %}My Deliveries | Warehouse IMS{% endblock %}
 
 {% block content %}
+<style>
+    .deliveries-header {
+        margin-bottom: 25px;
+    }
+
+    .deliveries-header h3 {
+        font-size: 30px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .deliveries-card {
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 10px;
+        padding: 25px;
+        min-height: 150px;
+        height: 100%;
+        text-align: center;
+    }
+
+    .card-level {
+        font-size: 14px;
+        color: #6B7280;
+        margin-top: 12px;
+        margin-bottom: 6px;
+    }
+
+    .card-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .icon-box {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .deliveries-icon { color: #3B82F6; }
+    .pending-icon { color: #F59E0B; }
+    .approved-icon { color: #10B981; }
+    .reject-icon { color: #EF4444; }
+</style>
+
 <div class="container-fluid">
-    <div class="header">
+    <div class="deliveries-header">
         <h3>My Deliveries</h3>
     </div>
 
-    <div class="row g-4">
-        <div class="col-xl-4 col-md-3">
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Total Deliveries -->
+        <div class="col-xl-3 col-md-6">
             <div class="deliveries-card shadow-sm">
-
                 <div class="icon-box deliveries-icon">
                     <i class="bi bi-calendar-check"></i>
                 </div>
-
-                <div class="card-level">
-                    Total Deliveries This Month
-                </div>
-
-                <div class="card-number">
-                    {{ deliveries_this_month }}
-                </div>
+                <div class="card-level">Total Deliveries This Month</div>
+                <div class="card-number">{{ deliveries_this_month|default:"0" }}</div>
             </div>
+        </div>
 
-            <div class="col-xl-4 col-md-3">
-                <div class="deliveries-card shadow-sm">
-
-                    <div class="icon-box pending-icon">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
+        <!-- Pending -->
+        <div class="col-xl-3 col-md-6">
+            <div class="deliveries-card shadow-sm">
+                <div class="icon-box pending-icon">
+                    <i class="bi bi-hourglass-split"></i>
                 </div>
+                <div class="card-level">Pending</div>
+                <div class="card-number">{{ pending_count|default:"0" }}</div>
+            </div>
+        </div>
+
+        <!-- Approved -->
+        <div class="col-xl-3 col-md-6">
+            <div class="deliveries-card shadow-sm">
+                <div class="icon-box approved-icon">
+                    <i class="bi bi-check-square-fill"></i>
+                </div>
+                <div class="card-level">Approved</div>
+                <div class="card-number">{{ approved_count|default:"0" }}</div>
+            </div>
+        </div>
+
+        <!-- Rejected -->
+        <div class="col-xl-3 col-md-6">
+            <div class="deliveries-card shadow-sm">
+                <div class="icon-box reject-icon">
+                    <i class="bi bi-x-square"></i>
+                </div>
+                <div class="card-level">Rejected</div>
+                <div class="card-number">{{ rejected_count|default:"0" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Deliveries Table -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4><i class="bi bi-truck text-primary"></i> Recent Deliveries</h4>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Delivery ID</th>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in recent_deliveries %}
+                        <tr>
+                            <td>{{ rec.reference_no|default:"—" }}</td>
+                            <td>{{ rec.transaction_date|date:"M d, Y h:i A" }}</td>
+                            <td>{{ rec.product.name }}</td>
+                            <td>{{ rec.quantity }}</td>
+                            <td>
+                                {% if rec.status == "Approved" %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif rec.status == "Pending" %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ rec.notes|default:"—" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No recent deliveries found...</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
