@@ -1,9 +1,14 @@
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from staff.models import StockTransaction, Supplier
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from staff.models import Product
+from staff.forms import SubmitInventoryForm
 from datetime import datetime
+from django.contrib import messages
+from django.contrib.messages.context_processors import messages
 
 
 class SupplierDashboard(LoginRequiredMixin, TemplateView):
@@ -63,3 +68,23 @@ class SupplierMyDeliveries(LoginRequiredMixin, TemplateView):
         context['recent_deliveries'] = transactions.order_by('-transaction_date')[:10]
 
         return context
+
+@login_required
+def submit_inventory(request):
+    if request.method == 'POST':
+        form = SubmitInventoryForm(request.POST)
+        if form.is_valid():
+            delivery = form.save(commit=False)
+            delivery.transaction_type = "Stock In"
+            delivery.status = "Pending"
+            delivery.staff = request.user
+            delivery.save()
+
+            messages.success(request, "Delivery submitted successfully!")
+            return redirect('submit_inventory')
+    else:
+        form = SubmitInventoryForm()
+
+    return render(request, 'supplier/submit_inventory.html', {
+        'form': form
+    })
