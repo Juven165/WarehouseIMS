@@ -59,7 +59,19 @@ class StockTransaction(models.Model):
         help_text="Only used when transaction_type is Adjustment"
     )
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    new_product_name = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+    )
+
     transaction_type = models.CharField(
         max_length=20,
         choices=TRANSACTION_CHOICES
@@ -83,6 +95,14 @@ class Supplier(models.Model):
         ("blacklisted", "Blacklisted"),
         ("new", "New Supplier"),
     ]
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='supplier_profile',
+        null=True,
+        blank=True
+    )
 
     name = models.CharField(max_length=200)
     contact_person = models.CharField(max_length=100)

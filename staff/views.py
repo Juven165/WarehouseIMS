@@ -144,26 +144,37 @@ def view_supplier_detail(request, supplier_id):
 def stock_in(request):
     recent_transactions = StockTransaction.objects.filter(
         transaction_type="Stock In"
-    ).select_related('product', 'supplier').order_by('-transaction_date')[:10]
+    ).select_related(
+        'product',
+        'supplier'
+    ).order_by('-transaction_date')[:10]
 
     products = Product.objects.all()
-    suppliers = Supplier.objects.filter(is_active=True)
+
+    suppliers = Supplier.objects.filter(
+        is_active=True
+    ).select_related('user')
 
     if request.method == 'POST':
         form = StockInForm(request.POST)
+
         if form.is_valid():
             transaction = form.save(commit=False)
             transaction.transaction_type = "Stock In"
             transaction.staff = request.user
             transaction.save()
 
-            # Update stock
             product = transaction.product
             product.current_stock += transaction.quantity
             product.save()
 
-            messages.success(request, f"Stock In successful for {product.name}!")
+            messages.success(
+                request,
+                f"Stock In successful for {product.name}!"
+            )
+
             return redirect('stock_in')
+
     else:
         form = StockInForm()
 
@@ -173,7 +184,12 @@ def stock_in(request):
         'products': products,
         'suppliers': suppliers,
     }
-    return render(request, 'staff/stock_in.html', context)
+
+    return render(
+        request,
+        'staff/stock_in.html',
+        context
+    )
 
 @login_required
 def stock_out(request):
@@ -292,3 +308,93 @@ def stock_transaction_history(request):
         "date_from": date_from,
         "date_to": date_to,
     })
+
+@login_required
+def pending_approval(request):
+    pending_approvals = (
+        StockTransaction.objects
+        .filter(status="Pending")
+        .select_related('product', 'supplier', 'staff')
+        .order_by('-transaction_date')
+    )
+
+    query = request.GET.get('q', '').strip()
+    transaction_type = request.GET.get('transaction_type', '').strip()
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
+
+    if query:
+        pending_approvals = pending_approvals.filter(
+            Q(product__name__icontains=query) |
+            Q(product__sku__icontains=query) |
+            Q(supplier__name__icontains=query)
+        )
+
+    if transaction_type:
+        pending_approvals = pending_approvals.filter(transaction_type=transaction_type)
+
+    if date_from:
+        try:
+            date_from_obj = make_aware(datetime.strptime(date_from, '%Y-%m-%d'))
+            pending_approvals = pending_approvals.filter(
+                transaction_date__date__gte=date_from_obj.date()
+            )
+        except ValueError:
+            pass
+
+    if date_to:
+        try:
+            date_to_obj = make_aware(datetime.strptime(date_to, '%Y-%m-%d'))
+            pending_approvals = pending_approvals.filter(
+                transaction_date__date__lte=date_to_obj.date()
+            )
+        except ValueError:
+            pass
+
+    return render(request, "staff/pending_approvals.html", {
+        'pending_approvals': pending_approvals,
+        'query': query,
+        'transaction_type': transaction_type,
+        'date_from': date_from,
+        'date_to': date_to,
+    })
+
+
+@login_required
+def approve_transaction(request, pk):
+    transaction = get_object_or_404(StockTransaction, pk=pk, status="Pending")
+
+    # Case 1: Existing Product
+    if transaction.product:
+        product = transaction.product
+        product.current_stock += transaction.quantity
+        product.save()
+
+        transaction.status = "Approved"
+        transaction.staff = request.user
+        transaction.save()
+
+        messages.success(request, f'"{product.name}" has been approved successfully!')
+
+    else:
+        messages.error(
+            request,
+            f'Cannot approve "{transaction.new_product_name}". Please create the product first in the Products page, then try approving again.'
+        )
+        return redirect('pending_approval')
+
+    return redirect('pending_approval')
+
+
+@login_required
+def reject_transaction(request, pk):
+    transaction = get_object_or_404(StockTransaction, pk=pk, status="Pending")
+
+    transaction.status = "Rejected"
+    transaction.staff = request.user
+    transaction.save()
+
+    product_name = transaction.product.name if transaction.product else transaction.new_product_name
+    messages.warning(request, f'"{product_name}" has been rejected.')
+
+    return redirect('pending_approval')

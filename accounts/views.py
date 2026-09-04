@@ -25,24 +25,27 @@ def dashboard(request):
     print(user.role)
 
     if user.role == 'admin':
-        messages.success(request, f"Welcome back{user.username}!")
+        messages.success(request, f"Welcome back, {user.username}!")
         return redirect('admin_dashboard')
 
-
     elif user.role == 'staff':
-        messages.success(request, f"Welcome back{user.username}!")
+        messages.success(request, f"Welcome back, {user.username}!")
         return redirect('staff_dashboard')
 
     elif user.role == 'supplier':
-        messages.success(request, f"Welcome back{user.username}!")
+        messages.success(request, f"Welcome back, {user.username}!")
         return redirect('supplier_dashboard')
 
     else:
-        messages.error(request, f"Invalid username or account not found please register first.")
+        messages.error(
+            request,
+            "Invalid username or account not found. Please register first."
+        )
         return redirect('login')
 
 def login_view(request):
     if request.method == "POST":
+
         username = request.POST.get("username")
         password = request.POST.get("password")
 
@@ -53,10 +56,19 @@ def login_view(request):
         )
 
         if user is not None:
+
+            # Clear old messages before successful login
+            storage = messages.get_messages(request)
+            list(storage)
+
             login(request, user)
             return redirect("dashboard")
+
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.error(
+                request,
+                "Invalid username or password."
+            )
 
     return render(request, "accounts/login.html")
 

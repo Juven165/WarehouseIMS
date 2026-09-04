@@ -66,14 +66,15 @@ class AdjustmentForm(forms.ModelForm):
 class SubmitInventoryForm(forms.ModelForm):
     class Meta:
         model = StockTransaction
-        fields = ['product', 'supplier', 'quantity', 'reference_no', 'notes']
+        fields = ['product', 'new_product_name', 'quantity', 'reference_no', 'notes']
 
         widgets = {
             'product': forms.Select(attrs={
-                'class': 'form-control',
+                'class': 'form-select',
             }),
-            'supplier': forms.Select(attrs={
+            'new_product_name': forms.TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'Type new product name here (if not in list)'
             }),
             'quantity': forms.NumberInput(attrs={
                 'class': 'form-control',
@@ -92,5 +93,20 @@ class SubmitInventoryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['product'].required = False
+        self.fields['product'].empty_label = "-- Select Existing Product --"
         self.fields['product'].label_from_instance = lambda obj: f"{obj.sku} - {obj.name}"
-        self.fields['supplier'].label_from_instance = lambda obj: obj.name
+        self.fields['new_product_name'].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        product = cleaned_data.get('product')
+        new_product_name = cleaned_data.get('new_product_name')
+
+        if not product and not new_product_name:
+            raise forms.ValidationError("Please select a product or type a new product name.")
+
+        if product and new_product_name:
+            raise forms.ValidationError("Please choose only one: existing product OR new product name.")
+
+        return cleaned_data

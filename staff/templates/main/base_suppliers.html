@@ -78,12 +78,14 @@
             text-align: center;
         }
 
-        .sidebar a:hover {
+        /* Hover para sa hindi active */
+        .sidebar a:not(.active):hover {
             background: #EFF6FF;
             color: #1D4ED8;
             border-left: 4px solid #93C5FD;
         }
 
+        /* Active style */
         .sidebar a.active {
             background: linear-gradient(90deg, #2563EB, #1D4ED8);
             color: #FFFFFF;
@@ -125,15 +127,18 @@
             <i class="bi bi-person-workspace"></i> Supplier Panel
         </div>
 
-        <a href="{% url 'supplier_dashboard' %}">
+        <a href="{% url 'supplier_dashboard' %}"
+           class="{% if request.resolver_match.url_name == 'supplier_dashboard' %}active{% endif %}">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
 
-        <a href="{% url 'supplier_deliveries' %}" >
+        <a href="{% url 'supplier_deliveries' %}"
+           class="{% if request.resolver_match.url_name == 'supplier_deliveries' %}active{% endif %}">
             <i class="bi bi-truck"></i> My Deliveries
         </a>
 
-        <a href="#">
+        <a href="{% url 'submit_inventory' %}"
+            class="{% if request.resolver_match.url_name == 'submit_inventory' %}active{% endif %}">
             <i class="bi bi-send-plus"></i> Submit Delivery
         </a>
 
@@ -154,6 +159,70 @@
     <div class="content">
         {% block content %}{% endblock %}
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% if messages %}
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+             style="z-index: 1080;">
+
+            {% for message in messages %}
+
+                <div class="toast align-items-center border-0 text-white
+                    {% if message.tags == 'success' %}
+                        bg-success
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        bg-danger
+                    {% elif message.tags == 'warning' %}
+                        bg-warning text-dark
+                    {% elif message.tags == 'info' %}
+                        bg-info text-dark
+                    {% else %}
+                        bg-secondary
+                    {% endif %}"
+                    role="alert"
+                    aria-live="assertive"
+                    aria-atomic="true"
+                    data-bs-delay="3000">
+
+                    <div class="d-flex">
+
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+
+                        <button type="button"
+                                class="btn-close btn-close-white me-2 m-auto"
+                                data-bs-dismiss="toast"
+                                aria-label="Close">
+                        </button>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const toastElements = document.querySelectorAll('.toast');
+
+            toastElements.forEach(function (toastElement) {
+
+                const toast = new bootstrap.Toast(toastElement, {
+                    delay: 3000
+                });
+
+                toast.show();
+
+            });
+
+        });
+    </script>
 
 </body>
 </html>

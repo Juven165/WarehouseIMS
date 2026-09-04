@@ -1,0 +1,121 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Pending Approval | Warehouse IMS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3 class=" fw-semibold mb-3">
+        <i class="bi bi-clock-history"></i>Pending Approvals
+    </h3>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+
+                <div class="col-auto">
+                    <label class="form-label small">Search</label>
+                    <input
+                            type="text"
+                            name="q"
+                            placeholder="Search product..."
+                            value="{{ query }}"
+                            style="min-width: 200px">
+                </div>
+
+                <div class="col-auto">
+                    <label class="form-label small">Trans Type</label>
+                    <select name="transaction_type" class="form-select">
+                        <option value="">-- Select Trans Type --</option>
+                        <option value="Stock In" {% if selected_type == 'Stock In' %}selected{% endif %}>Stock In</option>
+                        <option value="Stock Out" {% if selected_type == 'Stock Out' %}selected{% endif %}>Stock Out</option>
+                        <option value="Adjustment" {% if selected_type == 'Adjustment' %}selected{% endif %}>Adjustment</option>
+                    </select>
+                </div>
+
+                <div class="col-auto">
+                    <label class="form-label small">Date From</label>
+                    <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+                </div>
+
+                <div class="col-auto">
+                    <label class="form-label small">Date To</label>
+                    <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+                </div>
+
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Reference No</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apr in pending_approvals %}
+                        <tr>
+                            <td>{{ apr.transaction_date|date:"M d, Y h:i A" }}</td>
+                            <td>{{ apr.supplier.name|default:"—" }}</td>
+                            <td>
+                                <strong>{{ apr.product.name }}</strong><br>
+                                <small class="text-muted">{{ apr.product.sku }}</small>
+                            </td>
+                            <td>{{ apr.quantity }}</td>
+                            <td>{{ apr.reference_no|default:"—" }}</td>
+                            <td>{{ apr.notes|default:"—" }}</td>
+                            <td>
+                                {% if apr.status == 'Approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif apr.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if apr.status == 'Pending' %}
+                                    <a href="{% url 'approve_transaction' apr.pk %}"
+                                       class="btn btn-sm btn-success me-1"
+                                       onclick="return confirm('Approve this delivery?')">
+                                        <i class="bi bi-check-lg"></i> Approve
+                                    </a>
+                                    <a href="{% url 'reject_transaction' apr.pk %}"
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Reject this delivery?')">
+                                        <i class="bi bi-x-lg"></i> Reject
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted small">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                No pending approvals found...
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

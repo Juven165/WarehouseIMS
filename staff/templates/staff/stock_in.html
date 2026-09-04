@@ -45,15 +45,18 @@
 
                             <select name="supplier" class="form-select" required>
                                 <option value="">-- Select Supplier --</option>
+
                                 {% for supplier in suppliers %}
-                                    <option value="supplier.id">{{ supplier.name }}</option>
+                                    <option value="{{ supplier.id }}">
+                                        {{ supplier.user.username }}
+                                    </option>
                                 {% endfor %}
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Date Received</label>
-                            <input type="date" name="reference_no" class="form-control" placeholder="Optional...">
+                            <input type="date" name="transaction_date" class="form-control" placeholder="Optional...">
                         </div>
 
                         <div class="mb-3">

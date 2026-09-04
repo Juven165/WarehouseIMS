@@ -8,7 +8,6 @@ from staff.models import Product
 from staff.forms import SubmitInventoryForm
 from datetime import datetime
 from django.contrib import messages
-from django.contrib.messages.context_processors import messages
 
 
 class SupplierDashboard(LoginRequiredMixin, TemplateView):
@@ -69,6 +68,7 @@ class SupplierMyDeliveries(LoginRequiredMixin, TemplateView):
 
         return context
 
+
 @login_required
 def submit_inventory(request):
     if request.method == 'POST':
@@ -77,7 +77,14 @@ def submit_inventory(request):
             delivery = form.save(commit=False)
             delivery.transaction_type = "Stock In"
             delivery.status = "Pending"
-            delivery.staff = request.user
+
+            # Supplier ang naka-login, hindi staff
+            # delivery.staff = request.user   ← tanggalin muna ito
+
+            # Optional: i-set ang supplier based on logged-in user
+            if hasattr(request.user, 'supplier_profile'):
+                delivery.supplier = request.user.supplier_profile
+
             delivery.save()
 
             messages.success(request, "Delivery submitted successfully!")

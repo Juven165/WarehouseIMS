@@ -12,4 +12,7 @@ urlpatterns = [
     path('staff/stock-out', views.stock_out, name='stock_out'),
     path('staff/adjustment', views.adjustment, name='adjustment'),
     path('staff/transaction-history/', views.stock_transaction_history, name='transactions_history'),
+    path('staff/pending-approval/', views.pending_approval, name='pending_approval'),
+    path('staff/approve-transaction/<int:pk>/', views.approve_transaction, name='approve_transaction'),
+    path('staff/reject-transaction/<int:pk>/', views.reject_transaction, name='reject_transaction'),
 ]
