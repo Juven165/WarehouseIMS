@@ -1,5 +1,5 @@
 from django import forms
-from .models import StockTransaction
+from .models import StockTransaction, Product
 
 class StockInForm(forms.ModelForm):
     class Meta:
@@ -110,3 +110,45 @@ class SubmitInventoryForm(forms.ModelForm):
             raise forms.ValidationError("Please choose only one: existing product OR new product name.")
 
         return cleaned_data
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            'sku',
+            'name',
+            'category',
+            'unit',
+            'low_stock',
+            'supplier',
+            'description',
+        ]
+        widgets = {
+            'sku': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g. SKU-1001'
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter product name'
+            }),
+            'category': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'unit': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g. pcs, box, kg'
+            }),
+            'low_stock': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 0
+            }),
+            'supplier': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Optional description'
+            }),
+        }

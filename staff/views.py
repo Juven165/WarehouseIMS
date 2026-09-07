@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
 from staff.models import Product, StockTransaction, Category, Supplier
-from .forms import StockInForm, StockOutForm, AdjustmentForm
+from .forms import StockInForm, StockOutForm, AdjustmentForm, ProductForm
 from datetime import datetime
 from django.utils.timezone import make_aware
 
@@ -398,3 +398,20 @@ def reject_transaction(request, pk):
     messages.warning(request, f'"{product_name}" has been rejected.')
 
     return redirect('pending_approval')
+
+@login_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.created_by = request.user
+            product.save()
+            messages.success(request, f'Product "{product.name}" created successfully!')
+            return redirect('staff_product')
+    else:
+        form = ProductForm()
+
+    return render(request, 'staff/add_product.html', {
+        'form': form
+    })

@@ -1,0 +1,95 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Add Product | Warehouse IMS{% endblock %}
+
+{% block content %}
+<style>
+    .form-card {
+        max-width: 720px;
+        margin: 30px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .form-card .card-header {
+        border-radius: 12px 12px 0 0;
+        padding: 1.25rem 1.5rem;
+    }
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.35rem;
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 0.55rem 0.85rem;
+    }
+</style>
+
+<div class="card form-card">
+    <div class="card-header bg-primary text-white text-center">
+        <h5 class="mb-0">
+            <i class="bi bi-box-seam me-2"></i> Add New Product
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- SKU -->
+            <div class="mb-3">
+                <label class="form-label">SKU <span class="text-danger">*</span></label>
+                {{ form.sku }}
+            </div>
+
+            <!-- Product Name -->
+            <div class="mb-3">
+                <label class="form-label">Product Name <span class="text-danger">*</span></label>
+                {{ form.name }}
+            </div>
+
+            <!-- Category + Unit -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Category <span class="text-danger">*</span></label>
+                    {{ form.category }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Unit <span class="text-danger">*</span></label>
+                    {{ form.unit }}
+                </div>
+            </div>
+
+            <!-- Low Stock + Supplier -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Low Stock Threshold</label>
+                    {{ form.low_stock }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Supplier <span class="text-muted">(Optional)</span></label>
+                    {{ form.supplier }}
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="form-label">Description</label>
+                {{ form.description }}
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'staff_product' %}" class="btn btn-outline-secondary px-4">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check2-circle me-1"></i> Save Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -15,4 +15,5 @@ urlpatterns = [
     path('staff/pending-approval/', views.pending_approval, name='pending_approval'),
     path('staff/approve-transaction/<int:pk>/', views.approve_transaction, name='approve_transaction'),
     path('staff/reject-transaction/<int:pk>/', views.reject_transaction, name='reject_transaction'),
+    path('staff/add-product/', views.add_product, name='add_product'),
 ]
