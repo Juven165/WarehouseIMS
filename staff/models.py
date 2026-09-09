@@ -127,7 +127,7 @@ class Supplier(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=500)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)   
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

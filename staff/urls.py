@@ -16,4 +16,5 @@ urlpatterns = [
     path('staff/approve-transaction/<int:pk>/', views.approve_transaction, name='approve_transaction'),
     path('staff/reject-transaction/<int:pk>/', views.reject_transaction, name='reject_transaction'),
     path('staff/add-product/', views.add_product, name='add_product'),
+    path('staff/add-category/', views.add_category, name='add_category'),
 ]

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
 from staff.models import Product, StockTransaction, Category, Supplier
-from .forms import StockInForm, StockOutForm, AdjustmentForm, ProductForm
+from .forms import StockInForm, StockOutForm, AdjustmentForm, ProductForm, AddCategoryForm
 from datetime import datetime
 from django.utils.timezone import make_aware
 
@@ -86,7 +86,7 @@ def view_transaction(request, transaction_id):
 
     return render(
         request,
-        'staff/view_transaction.html',
+        'staff/view_transactions.html',
         {'transaction': transaction}
     )
 
@@ -413,5 +413,20 @@ def add_product(request):
         form = ProductForm()
 
     return render(request, 'staff/add_product.html', {
+        'form': form
+    })
+
+@login_required
+def add_category(request):
+    if request.method == 'POST':
+        form = AddCategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save()
+            messages.success(request, f'Category "{category.name}" created successfully!')
+            return redirect('categories')
+    else:
+        form = AddCategoryForm()
+
+    return render(request, 'staff/add_category.html', {
         'form': form
     })

@@ -76,38 +76,56 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for trans in transactions %}
-                        <tr>
-                            <td>{{ trans.transaction_date|date:"M d, Y h:i A"}}</td>
-                            <td>{{ trans.product.name }}</td>
-                            <td>
-                                {% if trans.transaction_type == "Stock In" %}
-                                    <span class="badge bg-success">Stock In</span>
-                                {% elif trans.transaction_type == "Stock Out" %}
-                                    <span class="badge bg-danger">Stock Out</span>
-                                {% elif trans.transaction_type == "Adjustment" %}
-                                    {% if trans.adjustment_type == "Increase" %}
-                                        <span class="badge bg-primary">Adjustment (Increase)</span>
+                        {% for trans in transactions %}
+                            <tr>
+                                <td>{{ trans.transaction_date|date:"M d, Y h:i A" }}</td>
+
+                                <td>
+                                    {% if trans.product %}
+                                        {{ trans.product.name }}
                                     {% else %}
-                                        <span class="badge bg-warning text-dark">Adjustment (Decrease)</span>
+                                        {{ trans.new_product_name|default:"—" }}
                                     {% endif %}
-                                {% else %}
-                                    <span class="badge bg-secondary">{{ trans.transaction_type }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ trans.supplier.name|default:"—" }}</td>
-                            <td>{{ trans.staff.get_full_name|default:trans.staff.username|default:"—" }}</td>
-                            <td>{{ trans.staff }}</td>
-                            <td>{{ trans.notes }}</td>
-                        </tr>
-                     {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                No transactions found.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
+                                </td>
+
+                                <td>
+                                    {% if trans.transaction_type == "Stock In" %}
+                                        <span class="badge bg-success">Stock In</span>
+                                    {% elif trans.transaction_type == "Stock Out" %}
+                                        <span class="badge bg-danger">Stock Out</span>
+                                    {% elif trans.transaction_type == "Adjustment" %}
+                                        {% if trans.adjustment_type == "Increase" %}
+                                            <span class="badge bg-primary">Adjustment (+)</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">Adjustment (-)</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ trans.transaction_type }}</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ trans.quantity }}</td>
+
+                                <td>{{ trans.supplier.name|default:"—" }}</td>
+
+                                <td>
+                                    {% if trans.staff %}
+                                        {{ trans.staff.get_full_name|default:trans.staff.username }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ trans.notes|default:"—" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    No transactions found.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
                 </table>
             </div>
         </div>

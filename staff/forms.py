@@ -1,5 +1,6 @@
 from django import forms
-from .models import StockTransaction, Product
+from .models import StockTransaction, Product, Category
+
 
 class StockInForm(forms.ModelForm):
     class Meta:
@@ -152,3 +153,23 @@ class ProductForm(forms.ModelForm):
                 'placeholder': 'Optional description'
             }),
         }
+
+class AddCategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'description', 'is_active']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter category name',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Enter category description (optional)'
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+        }
+

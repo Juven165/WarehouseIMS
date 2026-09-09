@@ -1,0 +1,71 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Add Category | Warehouse IMS{% endblock %}
+
+{% block content %}
+<style>
+    .form-card {
+        max-width: 600px;
+        margin: 40px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .form-card .card-header {
+        border-radius: 12px 12px 0 0;
+        padding: 1.25rem 1.5rem;
+    }
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.35rem;
+    }
+</style>
+
+<div class="card form-card">
+    <div class="card-header bg-primary text-white text-center">
+        <h5 class="mb-0">
+            <i class="bi bi-folder-plus me-2"></i> Add New Category
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Category Name -->
+            <div class="mb-3">
+                <label class="form-label">Category Name <span class="text-danger">*</span></label>
+                {{ form.name }}
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label">Description <span class="text-muted">(Optional)</span></label>
+                {{ form.description }}
+            </div>
+
+            <!-- Active -->
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    {{ form.is_active }}
+                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                        Category is active
+                    </label>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'categories' %}" class="btn btn-outline-secondary px-4">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check2-circle me-1"></i> Save Category
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,28 +1,144 @@
 {% extends 'main/base_staff.html' %}
 
-{% block title %}View Transaction Detail{% endblock %}
+{% block title %}View Transaction | Warehouse IMS{% endblock %}
 
 {% block content %}
-<div class="container">
-   <div class="card shadow">
-       <div class="card-header bg-primary text-white">
-           View Transactions
-       </div>
-       <div class="card-body">
-           <p><strong>Date:</strong>{{ transaction.transaction_date|date:"F d, Y h:i A" }}</p>
-           <p><strong>Product:</strong>{{ transaction.product.name }}</p>
-           <p><strong>Supplier:</strong>
-               {% if transaction.product.supplier %}
-                {{ transaction.product.supplier.name }}
-               {% else %}
-                    —
-               {% endif %}
-           </p>
-           <p><strong>Quantity:</strong>{{ transaction.quantity }}</p>
-       </div>
-       <div class="card-footer text-end">
-           <a href="{% url 'staff_dashboard' %}">Back</a>
-       </div>
-   </div>
+<style>
+    .detail-card {
+        max-width: 700px;
+        margin: 30px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .detail-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.2rem;
+    }
+    .detail-value {
+        font-size: 1rem;
+        color: #111827;
+        margin-bottom: 1.25rem;
+    }
+</style>
+
+<div class="card detail-card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-receipt me-2"></i> Transaction Details
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row">
+            <!-- Date -->
+            <div class="col-md-6">
+                <div class="detail-label">Date & Time</div>
+                <div class="detail-value">
+                    {{ transaction.transaction_date|date:"F d, Y h:i A" }}
+                </div>
+            </div>
+
+            <!-- Type -->
+            <div class="col-md-6">
+                <div class="detail-label">Transaction Type</div>
+                <div class="detail-value">
+                    {% if transaction.transaction_type == "Stock In" %}
+                        <span class="badge bg-success">Stock In</span>
+                    {% elif transaction.transaction_type == "Stock Out" %}
+                        <span class="badge bg-danger">Stock Out</span>
+                    {% elif transaction.transaction_type == "Adjustment" %}
+                        <span class="badge bg-primary">Adjustment</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ transaction.transaction_type }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Product -->
+            <div class="col-md-6">
+                <div class="detail-label">Product</div>
+                <div class="detail-value">
+                    {% if transaction.product %}
+                        {{ transaction.product.name }}
+                        <br><small class="text-muted">{{ transaction.product.sku }}</small>
+                    {% else %}
+                        {{ transaction.new_product_name|default:"—" }}
+                        <br><small class="text-muted">(New product)</small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="col-md-6">
+                <div class="detail-label">Quantity</div>
+                <div class="detail-value fw-semibold">
+                    {{ transaction.quantity }}
+                </div>
+            </div>
+
+            <!-- Supplier -->
+            <div class="col-md-6">
+                <div class="detail-label">Supplier</div>
+                <div class="detail-value">
+                    {{ transaction.supplier.name|default:"—" }}
+                </div>
+            </div>
+
+            <!-- Staff -->
+            <div class="col-md-6">
+                <div class="detail-label">Processed By</div>
+                <div class="detail-value">
+                    {% if transaction.staff %}
+                        {{ transaction.staff.get_full_name|default:transaction.staff.username }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reference No -->
+            <div class="col-md-6">
+                <div class="detail-label">Reference No</div>
+                <div class="detail-value">
+                    {{ transaction.reference_no|default:"—" }}
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    {% if transaction.status == "Approved" %}
+                        <span class="badge bg-success">Approved</span>
+                    {% elif transaction.status == "Pending" %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif transaction.status == "Rejected" %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% else %}
+                        {{ transaction.status }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="col-12">
+                <div class="detail-label">Notes</div>
+                <div class="detail-value">
+                    {{ transaction.notes|default:"—" }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white text-end">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
 </div>
 {% endblock %}
