@@ -78,10 +78,6 @@ def submit_inventory(request):
             delivery.transaction_type = "Stock In"
             delivery.status = "Pending"
 
-            # Supplier ang naka-login, hindi staff
-            # delivery.staff = request.user   ← tanggalin muna ito
-
-            # Optional: i-set ang supplier based on logged-in user
             if hasattr(request.user, 'supplier_profile'):
                 delivery.supplier = request.user.supplier_profile
 
@@ -94,4 +90,28 @@ def submit_inventory(request):
 
     return render(request, 'supplier/submit_inventory.html', {
         'form': form
+    })
+
+@login_required
+def view_details(request, product_id):
+    reports = get_object_or_404(StockTransaction, id=product_id)
+
+    return render(request, 'supplier/view_details.html', {'reports': reports})
+
+@login_required
+def my_report(request):
+    supplier = Supplier.objects.filter(email=request.user.email).first()
+
+    if supplier:
+        reports = (
+            StockTransaction.objects
+            .filter(supplier=supplier, transaction_type="Stock In")
+            .select_related('product')
+            .order_by('-transaction_date')
+        )
+    else:
+        reports = StockTransaction.objects.none()
+
+    return render(request, 'supplier/my_report.html', {
+        'reports': reports
     })

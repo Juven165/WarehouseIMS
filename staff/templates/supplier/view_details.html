@@ -1,0 +1,104 @@
+{% extends 'main/base_suppliers.html' %}
+
+{% block title %}View Transaction Details | Warehouse IMS{% endblock %}
+
+{% block content %}
+<style>
+    .card-detail {
+        max-width: 700px;
+        margin: 30px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .detail-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.25rem;
+    }
+    .detail-value {
+        font-size: 1rem;
+        color: #111827;
+        margin-bottom: 1.25rem;
+    }
+</style>
+
+<div class="card card-detail">
+    <div class="card-header bg-primary text-white text-center">
+        <h5 class="mb-0">
+            <i class="bi bi-receipt me-2"></i> View Transaction Details
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row">
+            <!-- Date -->
+            <div class="col-md-6">
+                <div class="detail-label">Date</div>
+                <div class="detail-value">
+                    {{ reports.transaction_date|date:"F d, Y h:i A" }}
+                </div>
+            </div>
+
+            <!-- Product -->
+            <div class="col-md-6">
+                <div class="detail-label">Product</div>
+                <div class="detail-value">
+                    {% if reports.product %}
+                        {{ reports.product.name }}
+                    {% else %}
+                        {{ reports.new_product_name|default:"—" }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="col-md-6">
+                <div class="detail-label">Quantity</div>
+                <div class="detail-value fw-semibold">
+                    {{ reports.quantity|default:"—" }}
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    {% if reports.status == 'Approved' %}
+                        <span class="badge bg-success">Approved</span>
+                    {% elif reports.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reference No -->
+            <div class="col-md-6">
+                <div class="detail-label">Reference No</div>
+                <div class="detail-value">
+                    {{ reports.reference_no|default:"—" }}
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="col-md-6">
+                <div class="detail-label">Notes</div>
+                <div class="detail-value">
+                    {{ reports.notes|default:"—" }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white text-end">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
+</div>
+{% endblock %}

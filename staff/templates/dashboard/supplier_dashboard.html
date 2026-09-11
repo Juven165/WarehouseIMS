@@ -202,7 +202,7 @@
                             <td>{{ del.reference_no|default:"—" }}</td>
                             <td>{{ del.notes|default:"—" }}</td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                <a href="{% url 'view_details' del.id %}" class="btn btn-sm btn-outline-primary">View</a>
                             </td>
                         </tr>
                         {% empty %}
