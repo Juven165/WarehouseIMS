@@ -202,7 +202,24 @@
                             <td>{{ del.reference_no|default:"—" }}</td>
                             <td>{{ del.notes|default:"—" }}</td>
                             <td>
-                                <a href="{% url 'view_details' del.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'view_details' del.id %}"
+                                       class="btn btn-sm btn-outline-primary" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    {% if del.status == "Pending" %}
+                                        <a href="{% url 'edit_delivery' del.pk %}"
+                                           class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="#"
+                                           class="btn btn-sm btn-outline-danger" title="Delete"
+                                           onclick="return confirm('Delete this delivery?')">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         {% empty %}

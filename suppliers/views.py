@@ -35,6 +35,33 @@ class SupplierDashboard(LoginRequiredMixin, TemplateView):
 
         return context
 
+@login_required
+def edit_delivery(request, pk):
+    delivery = get_object_or_404(
+        StockTransaction,
+        pk=pk,
+        status="Pending"
+    )
+
+    supplier = getattr(request.user, 'supplier_profile', None)
+    if supplier and delivery.supplier != supplier:
+        messages.error(request, "You cannot edit this delivery.")
+        return redirect('supplier_dashboard')
+
+    if request.method == 'POST':
+        form = SubmitInventoryForm(request.POST, instance=delivery)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Delivery updated successfully!")
+            return redirect('supplier_dashboard')
+    else:
+        form = SubmitInventoryForm(instance=delivery)
+
+    return render(request, 'supplier/edit_delivery.html', {
+        'form': form,
+        'delivery': delivery
+    })
+
 class SupplierMyDeliveries(LoginRequiredMixin, TemplateView):
     template_name = 'supplier/supplier_my_deliveries.html'
 
@@ -115,3 +142,7 @@ def my_report(request):
     return render(request, 'supplier/my_report.html', {
         'reports': reports
     })
+
+@login_required
+def my_profile(request):
+    pass

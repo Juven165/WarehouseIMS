@@ -78,7 +78,7 @@
             text-align: center;
         }
 
-        /* Hover para sa hindi active */
+        /* Hover for not active */
         .sidebar a:not(.active):hover {
             background: #EFF6FF;
             color: #1D4ED8;
@@ -142,7 +142,8 @@
             <i class="bi bi-send-plus"></i> Submit Delivery
         </a>
 
-        <a href="{% url 'my_report' %}">
+        <a href="{% url 'my_report' %}"
+            class="{% if request.resolver_match.url_name == 'my_report' %}active{% endif %}">
             <i class="bi bi-file-earmark-bar-graph"></i> Reports
         </a>
 

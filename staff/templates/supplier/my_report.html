@@ -1,23 +1,77 @@
 {% extends 'main/base_suppliers.html' %}
 
-{% block title %}My Reports|Staff{% endblock %}
+{% block title %}My Reports | Warehouse IMS{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div class="header">
-            <h3><i class="bi bi-card-list"></i> My Reports</h3>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">
+            <i class="bi bi-card-list me-2"></i> My Reports
+        </h3>
+        <span class="badge bg-primary rounded-pill">
+            {{ reports|length }} record{{ reports|length|pluralize }}
+        </span>
+    </div>
 
-            <div class="card shadow-sm">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th></th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Date & Time</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Reference No</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in reports %}
+                        <tr>
+                            <td class="ps-3 text-nowrap">
+                                {{ item.transaction_date|date:"M d, Y h:i A" }}
+                            </td>
+                            <td>
+                                {% if item.product %}
+                                    {{ item.product.name }}
+                                {% else %}
+                                    {{ item.new_product_name|default:"—" }}
+                                {% endif %}
+                            </td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.reference_no|default:"—" }}</td>
+                            <td>
+                                {% if item.status == 'Approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif item.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">{{ item.notes|default:"—" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'view_details' item.id %}"
+                                   class="btn btn-sm btn-outline-primary" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                No reports found...
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
