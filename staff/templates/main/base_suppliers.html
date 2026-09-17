@@ -147,7 +147,8 @@
             <i class="bi bi-file-earmark-bar-graph"></i> Reports
         </a>
 
-        <a href="#">
+        <a href="{% url 'my_profile' %}"
+            class="{% if request.resolver_match.url_name == 'my_profile' %}active{% endif %}">
             <i class="bi bi-person-circle"></i> Profile
         </a>
 

@@ -4,7 +4,6 @@ from django.views.generic import TemplateView
 from staff.models import StockTransaction, Supplier
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from staff.models import Product
 from staff.forms import SubmitInventoryForm
 from datetime import datetime
 from django.contrib import messages
@@ -126,6 +125,19 @@ def view_details(request, product_id):
     return render(request, 'supplier/view_details.html', {'reports': reports})
 
 @login_required
+def delete_delivery(request, pk):
+    delivery = get_object_or_404(StockTransaction, pk=pk, status="Pending")
+
+    supplier = getattr(request.user, 'supplier_profile', None)
+    if not supplier or delivery.supplier != supplier:
+        messages.error(request, "You cannot delete this delivery.")
+        return redirect('supplier_dashboard')
+
+    delivery.delete()
+    messages.success(request, "Delivery deleted successfully!")
+    return redirect('supplier_dashboard')
+
+@login_required
 def my_report(request):
     supplier = Supplier.objects.filter(email=request.user.email).first()
 
@@ -142,7 +154,3 @@ def my_report(request):
     return render(request, 'supplier/my_report.html', {
         'reports': reports
     })
-
-@login_required
-def my_profile(request):
-    pass

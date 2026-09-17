@@ -69,13 +69,26 @@
                    </td>
 
                     <td>
-                        <a href="#" class="btn btn-sm btn-info">
-                            View
-                        </a>
+                        <div class="d-flex justify-content-center gap-1">
+                            <a href="#"
+                               class="btn btn-sm btn-outline-primary"
+                               title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
 
-                        <a href="#" class="btn btn-sm btn-danger">
-                            Delete
-                        </a>
+                            <a href="#"
+                               class="btn btn-sm btn-outline-warning"
+                               title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="#"
+                               class="btn btn-sm btn-outline-danger"
+                               title="Delete"
+                               onclick="return confirm('Delete this product?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}

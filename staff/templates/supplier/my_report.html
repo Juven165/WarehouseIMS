@@ -54,10 +54,24 @@
                             </td>
                             <td class="text-muted small">{{ item.notes|default:"—" }}</td>
                             <td class="text-center">
-                                <a href="{% url 'view_details' item.id %}"
-                                   class="btn btn-sm btn-outline-primary" title="View">
-                                    <i class="bi bi-eye"></i>
-                                </a>
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="{% url 'view_details' item.id %}"
+                                       class="btn btn-sm btn-outline-primary" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    {% if item.status == "Pending" %}
+                                        <a href="{% url 'edit_delivery' item.id %}"
+                                           class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'delete_delivery' item.id %}"
+                                           class="btn btn-sm btn-outline-danger" title="Delete"
+                                           onclick="return confirm('Delete this delivery?')">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         {% empty %}

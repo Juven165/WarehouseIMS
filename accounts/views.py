@@ -3,6 +3,8 @@ from django.contrib import messages
 from accounts.forms import RegisterForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from .models import Profile
+from .forms import ProfileForm
 
 def register(request):
     if request.method == 'POST':
@@ -76,3 +78,21 @@ def logout(request):
     logout(request)
     messages.success(request, "You have successfully logged out")
     return redirect('login')
+
+@login_required
+def my_profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('my_profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'accounts/my_profile.html', {
+        'form': form,
+        'profile': profile
+    })

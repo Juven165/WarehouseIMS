@@ -1,7 +1,6 @@
 from django import forms
 from .models import StockTransaction, Product, Category
 
-
 class StockInForm(forms.ModelForm):
     class Meta:
         model = StockTransaction
@@ -172,4 +171,3 @@ class AddCategoryForm(forms.ModelForm):
                 'class': 'form-check-input'
             }),
         }
-
