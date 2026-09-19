@@ -17,4 +17,8 @@ urlpatterns = [
     path('staff/reject-transaction/<int:pk>/', views.reject_transaction, name='reject_transaction'),
     path('staff/add-product/', views.add_product, name='add_product'),
     path('staff/add-category/', views.add_category, name='add_category'),
+    path('staff/view-trans/<int:pk>/', views.view_trans, name='view_trans'),
+    path('staff/delete-trans/<int:pk>/', views.delete_trans, name='delete_trans'),
+    path('staff/product-detail/<int:pk>/', views.view_product_detail, name='product_detail'),
+    path('staff/update-product/<int:pk>/', views.update_product, name='update_product'),
 ]

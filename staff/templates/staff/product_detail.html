@@ -1,0 +1,89 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Product Details|Staff{% endblock %}
+
+{% block content %}
+    <style>
+        .product-card {
+            max-width: 700px;
+            margin: 30px auto;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .product-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+    </style>
+    <div class="card product-card">
+        <div class="card-header bg-primary  text-center text-white">
+            <h3><i class="bi bi-receipt me-2"></i> Product Detail</h3>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+                    <div class="product-label">SKU</div>
+                    <div class="product-value">
+                        {{ products.sku }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="product-label">Product Name</div>
+                    <div class="product-value">
+                        {{ products.name}}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="product-label">Category</div>
+                    <div class="product-value">
+                        {{ products.category }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="product-label">Supplier</div>
+                    <div class="product-value">
+                        {{ products.supplier }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="product-label">Unit</div>
+                    <div class="product-value">
+                        {{ products.unit }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="product-label">Current Stock</div>
+                    <div class="product-value">
+                        {{ products.current_stock }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="product-label">Status</div>
+                    <div class="product-value">
+                        {% if products.current_stock == 0 %}
+                            <span class="badge bg-danger">Out of Stock</span>
+                        {% elif products.current_stock <= products.low_stock %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% else %}
+                            <span class="badge bg-success">In Stock</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

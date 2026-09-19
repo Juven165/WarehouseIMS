@@ -73,6 +73,7 @@
                             <th>Supplier</th>
                             <th>Staff</th>
                             <th>Notes</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,10 +118,22 @@
                                 </td>
 
                                 <td>{{ trans.notes|default:"—" }}</td>
+
+                                <td>
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <a href="{% url 'view_trans' trans.pk %}" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="{% url 'delete_trans' trans.pk %}" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
+                                <td colspan="9" class="text-center text-muted py-4">
                                     No transactions found.
                                 </td>
                             </tr>

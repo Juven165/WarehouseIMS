@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
 from staff.models import Product, StockTransaction, Category, Supplier
-from .forms import StockInForm, StockOutForm, AdjustmentForm, ProductForm, AddCategoryForm
+from .forms import StockInForm, StockOutForm, AdjustmentForm, AddProductForm, AddCategoryForm
 from datetime import datetime
 from django.utils.timezone import make_aware
 
@@ -99,6 +99,31 @@ def product(request):
         products = products.filter(Q(sku__icontains=query) | Q(name__icontains=query))
 
     return render(request, 'staff/product.html', {'products': products})
+
+@login_required
+def view_product_detail(request, pk):
+    products = get_object_or_404(Product, pk=pk)
+
+    return render(request, 'staff/product_detail.html', {'products': products})
+
+@login_required
+def update_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == "POST":
+        form = AddProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'"{product.name}" updated successfully!')
+            return redirect('staff_product')
+    else:
+        form = AddProductForm(instance=product)
+
+    return render(request, 'staff/update_product.html', {
+        'form': form,
+        'product': product
+    })
+
 
 @login_required
 def categories(request):
@@ -310,6 +335,18 @@ def stock_transaction_history(request):
     })
 
 @login_required
+def view_trans(request, pk):
+    transaction = get_object_or_404(StockTransaction, pk=pk)
+    return render(request, 'staff/view_trans.html', {'transaction': transaction})
+
+@login_required
+def delete_trans(request, pk):
+    transaction = get_object_or_404(StockTransaction, pk=pk)
+    transaction.delete()
+    messages.success(request, 'Transaction successfully deleted!')
+    return redirect('transactions_history')
+
+@login_required
 def pending_approval(request):
     pending_approvals = (
         StockTransaction.objects
@@ -402,7 +439,7 @@ def reject_transaction(request, pk):
 @login_required
 def add_product(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = AddProductForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
             product.created_by = request.user
@@ -410,7 +447,7 @@ def add_product(request):
             messages.success(request, f'Product "{product.name}" created successfully!')
             return redirect('staff_product')
     else:
-        form = ProductForm()
+        form = AddProductForm()
 
     return render(request, 'staff/add_product.html', {
         'form': form

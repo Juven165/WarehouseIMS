@@ -70,13 +70,13 @@
 
                     <td>
                         <div class="d-flex justify-content-center gap-1">
-                            <a href="#"
+                            <a href="{% url 'product_detail' p.pk %}"
                                class="btn btn-sm btn-outline-primary"
                                title="View">
                                 <i class="bi bi-eye"></i>
                             </a>
 
-                            <a href="#"
+                            <a href="{% url 'update_product' p.pk %}"
                                class="btn btn-sm btn-outline-warning"
                                title="Edit">
                                 <i class="bi bi-pencil"></i>

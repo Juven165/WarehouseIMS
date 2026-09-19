@@ -111,7 +111,7 @@ class SubmitInventoryForm(forms.ModelForm):
 
         return cleaned_data
 
-class ProductForm(forms.ModelForm):
+class AddProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = [
@@ -152,6 +152,7 @@ class ProductForm(forms.ModelForm):
                 'placeholder': 'Optional description'
             }),
         }
+
 
 class AddCategoryForm(forms.ModelForm):
     class Meta:
