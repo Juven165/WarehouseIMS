@@ -1,0 +1,57 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Stock In Details{% endblock %}
+
+{% block content %}
+<style>
+    .stock-card {
+        max-width: 600px;
+        margin: 30px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .stock-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+</style>
+<div class="card stock-card">
+    <div class="card-header bg-primary text-center text-white">
+        <i class="bi bi-ticket-detailed-fill"></i> Stock In Details
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="stock-label">Date</div>
+                {{ stock_in.transaction_date|date:"M d, Y h:i A" }}
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="stock-label">Product</div>
+                {{ stock_in.product }}
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="stock-label">Quantity</div>
+                {{ stock_in.product }}
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="stock-label">Supplier</div>
+                {{ stock_in.supplier }}
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'stock_in' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

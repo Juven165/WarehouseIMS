@@ -8,7 +8,7 @@ class Product(models.Model):
     sku = models.CharField(max_length=50)
     name = models.CharField(max_length=200)
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=500, blank=True)
     unit = models.CharField(max_length=200, default='pcs')
     current_stock = models.PositiveIntegerField(default=0)
     low_stock = models.PositiveIntegerField(default=10)
@@ -127,7 +127,7 @@ class Supplier(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=500)
-    is_active = models.BooleanField(default=True)   
+    is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

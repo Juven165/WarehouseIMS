@@ -3,7 +3,7 @@
 {% block title %}Stock In | Warehouse IMS{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="container-fluid p-6">
     <div class="row">
         <div class="col-lg-6">
             <div class="card shadow-sm">
@@ -79,7 +79,7 @@
 
         <div class="col-lg-6">
             <div class="card shadow-sm">
-                <div class="card-header">
+                <div class="card-header bg-primary text-center text-white">
                     <h6 class=" fw-bold mb-0">Recent Stock In</h6>
                 </div>
 
@@ -88,7 +88,7 @@
                         <table class="table table-sm table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Date</th>
+                                    <th>Date & Time</th>
                                     <th>Product</th>
                                     <th>Qty</th>
                                     <th>Supplier</th>
@@ -99,18 +99,25 @@
                             <tbody>
                                 {% for trans in recent_transactions %}
                                 <tr>
-                                    <td>{{ trans.transaction_date|date:"M d, Y" }}</td>
+                                    <td>{{ trans.transaction_date|date:"M d, Y h:i A" }}</td>
                                     <td>{{ trans.product.name }}</td>
                                     <td>{{ trans.quantity }}</td>
                                     <td>{{ trans.supplier.name }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-primary">
-                                            View
-                                        </a>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="{% url 'stock_in_details' trans.pk %}"
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
 
-                                        <a href="#" class="btn btn-danger">
-                                            Delete
-                                        </a>
+                                            <a href="{% url 'delete_stock_in' trans.pk %}"
+                                               class="btn btn-sm btn-outline-danger"
+                                               title="Delete"
+                                               onclick="return confirm('Delete this stock in record?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% empty %}

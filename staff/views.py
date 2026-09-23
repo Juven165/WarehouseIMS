@@ -115,7 +115,9 @@ def update_product(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f'"{product.name}" updated successfully!')
-            return redirect('staff_product')
+            return redirect('staff_product')  # check this URL name
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = AddProductForm(instance=product)
 
@@ -147,6 +149,11 @@ def supplier(request):
         'suppliers': suppliers,
         'total_suppliers': total_suppliers
     })
+
+@login_required
+def supplier_details(request, supplier_id):
+    suppliers = get_object_or_404(Supplier, id=supplier_id)
+    return render(request, 'staff/supplier_details.html', {'suppliers': suppliers})
 
 @login_required
 def delete_supplier(request, supplier_id):
@@ -215,6 +222,36 @@ def stock_in(request):
         'staff/stock_in.html',
         context
     )
+
+@login_required
+def view_stock_in(request, pk):
+    stock_in = get_object_or_404(StockTransaction, pk=pk)
+
+    return render(request, 'staff/view_stock_in.html', {'stock_in': stock_in})
+
+@login_required
+def delete_stock_in(request, pk):
+    stock_in = get_object_or_404(
+        StockTransaction,
+        pk=pk,
+        transaction_type="Stock In"
+    )
+
+    product_name = stock_in.product.name if stock_in.product else stock_in.new_product_name
+    quantity = stock_in.quantity
+    product = stock_in.product
+
+    if product:
+        product.current_stock = max(0, product.current_stock - quantity)
+        product.save()
+
+    stock_in.delete()
+
+    messages.success(
+        request,
+        f'Stock In for "{product_name}" deleted successfully!'
+    )
+    return redirect('stock_in')
 
 @login_required
 def stock_out(request):
