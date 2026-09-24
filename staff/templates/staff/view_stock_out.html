@@ -1,0 +1,60 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Stock Out Detail|Staff{% endblock %}
+
+{% block content %}
+    <style>
+        .stock-card {
+            max-width: 600px;
+            margin: 30px auto;
+            border: none;
+            border-radius; 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+    </style>
+    <div class="card stock-card">
+        <div class="card-header bg-primary text-white text-center">
+            <h3><i class="bi bi-box-arrow-down"></i> Stock Out Details</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5 mb-4">
+                    <div class="stock-label">Date</div>
+                    {{ stockout.transaction_date|date:"M d, Y h:i A" }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="stock-label">Product</div>
+                    {{ stockout.product }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="stock-label">Quantity</div>
+                    {{ stockout.quantity }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="stock-label">Staff</div>
+                    {{ stockout.staff }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="stock-label">Notes</div>
+                    {{ stockout.notes }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="stock-label">Notes</div>
+                    <span class="badge bg-success">Completed</span>
+                </div>
+            </div>
+
+            <div class="card-footer text-end">
+                <a href="{% url 'stock_out' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

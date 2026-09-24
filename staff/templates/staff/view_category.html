@@ -1,0 +1,57 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Categories Details|Staff{% endblock %}
+
+{% block content %}
+    <style>
+        .categories-card {
+            max-width: 600px;
+            margin: 30px auto;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .category-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 0.2rem
+        }
+    </style>
+    <div class="card categories-card">
+        <div class="card-header bg-primary text-white text-center">
+            <h3><i class="bi bi-bookmark-fill"></i> Categories Details</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5 mb-4">
+                    <div class="category-label">Category Name</div>
+                    {{ categories.name }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="category-label">Description</div>
+                    {{ categories.description }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="category-label">Total Products</div>
+                    {{ categories.product_set.count}}
+                </div>
+
+                <div class="col-md-5">
+                    <div class="category-label">Status</div>
+                    {% if categories.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock%}

@@ -140,6 +140,17 @@ def categories(request):
     })
 
 @login_required
+def category_details(request, pk):
+    categories = get_object_or_404(Category, pk=pk)
+    return render(request, 'staff/view_category.html', {'categories': categories})
+
+@login_required
+def delete_categories(request, pk):
+    categories = get_object_or_404(Category, pk=pk)
+    categories.delete()
+    return redirect('categories')
+
+@login_required
 def supplier(request):
     suppliers = Supplier.objects.all()
 
@@ -154,6 +165,18 @@ def supplier(request):
 def supplier_details(request, supplier_id):
     suppliers = get_object_or_404(Supplier, id=supplier_id)
     return render(request, 'staff/supplier_details.html', {'suppliers': suppliers})
+
+@login_required
+def delete_supplier(request, supplier_id):
+    supplier = get_object_or_404(Supplier, id=supplier_id)
+
+    name = supplier.name
+
+    supplier.delete()
+
+    messages.success(request, f'"{name}" deleted successfully!')
+    return redirect('supplier')
+
 
 @login_required
 def delete_supplier(request, supplier_id):
@@ -286,6 +309,40 @@ def stock_out(request):
     return render(request, 'staff/stock_out.html', context)
 
 @login_required
+def stock_out_details(request, pk):
+    stockout = get_object_or_404(StockTransaction, pk=pk)
+    return render(request, 'staff/view_stock_out.html', {'stockout': stockout})
+
+@login_required
+def delete_stock_out(request, pk):
+    stock_out = get_object_or_404(
+        StockTransaction,
+        pk=pk,
+        transaction_type="Stock Out"
+    )
+
+    product_name = (
+        stock_out.product.name
+        if stock_out.product
+        else stock_out.new_product_name
+    )
+    quantity = stock_out.quantity
+    product = stock_out.product
+
+    if product:
+        product.current_stock += quantity
+        product.save()
+
+    stock_out.delete()
+
+    messages.success(
+        request,
+        f'Stock Out for "{product_name}" deleted and stock restored!'
+    )
+    return redirect('stock_out')
+
+
+@login_required
 def adjustment(request):
     recent_adjustments = (
         StockTransaction.objects
@@ -328,6 +385,11 @@ def adjustment(request):
         'form': form,
     }
     return render(request, 'staff/adjustments.html', context)
+
+@login_required
+def adjustment_details(request, pk):
+    adjustment = get_object_or_404(StockTransaction, pk=pk)
+    return render(request, 'staff/adjustment_details.html', {'adjustment': adjustment})
 
 @login_required
 def stock_transaction_history(request):

@@ -32,26 +32,31 @@
                     <td>{{ c.description|default:"—" }}</td>
                     <td>{{ c.product_set.count }}</td>
                     <td>
-                        {% if c.product.current_stock == 0 %}
-                            <span class="badge bg-danger">Out of Stock</span>
-                        {% elif c.product.current_stock <= c.product.low_stock %}
-                            <span class="badge bg-warning">Low Stock</span>
+                        {% if c.is_active %}
+                            <span class="badge bg-success">Active</span>
                         {% else %}
-                            <span class="bg-success">In Stock</span>
+                            <span class="badge bg-secondary">Inactive</span>
                         {% endif %}
                     </td>
-
                     <td>
-                        <a href="#" class="btn btn-info">
-                            View
-                        </a>
-
-                        <a href="#" class="btn btn-danger">Delete</a>
+                        <div class="d-flex justify-content-center gap-1">
+                            <a href="{% url 'category_details' c.pk %}"
+                               class="btn btn-sm btn-outline-primary" title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{% url 'delete_categories' c.pk %}"
+                               class="btn btn-sm btn-outline-danger" title="Delete"
+                               onclick="return confirm('Delete this category?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-muted">No categories found...</td>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        No categories found...
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
