@@ -11,6 +11,14 @@
             border-radius; 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
+
+        .stock-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
     </style>
     <div class="card stock-card">
         <div class="card-header bg-primary text-white text-center">
@@ -31,7 +39,7 @@
 
                 <div class="col-md-5 mb-4">
                     <div class="stock-label">Quantity</div>
-                    {{ stockout.quantity }}
+                    <span class="text-danger fw-bold">-{{ stockout.quantity }}</span>
                 </div>
 
                 <div class="col-md-5 mb-4">

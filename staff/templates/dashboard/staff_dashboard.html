@@ -125,13 +125,13 @@
                     <td>
                         <a href="{% url 'view_transactions' app.id %}"
                            class="btn btn-sm btn-info">
-                            View
+                            <i class="bi bi-eye"></i>
                         </a>
 
                         <a href="{% url 'delete_transactions' app.id %}"
                            class="btn btn-sm btn-danger"
                            onclick="return confirm('Delete this transaction?')">
-                            Delete
+                            <i class="bi bi-trash"></i>
                         </a>
                     </td>
                 </tr>

@@ -1,10 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'main/base_staff.html' %}
 
-</body>
-</html>
+{% block title %}Adjustment Details|Staff{% endblock %}
+
+{% block content %}
+    <style>
+        .details-card {
+            max-width: 600px;
+            margin: 30px auto;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .details-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+    </style>
+    <div class="card details-card">
+        <div class="card-header bg-primary text-center text-white">
+            <h3><i class="bi bi-wrench-adjustable"></i> Adjustments</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5 mb-4">
+                    <div class="details-label">Date & Time</div>
+                    {{ adjustment.transaction_date|date:"M d, Y h:i A"}}
+                </div>
+
+                <div class="col-md-5">
+                    <div class="details-label">Product</div>
+                    {{ adjustment.product.name }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="details-label">Type</div>
+                    {% if adjustment.adjustment_type == 'Increase' %}
+                        <span class="badge bg-success">Increase</span>
+                    {% else %}
+                        <span class="badge bg-danger">Decrease</span>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="details-label">Quantity</div>
+                    <span class="text-danger fw-bold">-{{ adjustment.quantity }}</span>
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="details-label">Staff</div>
+                    {{ adjustment.staff }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="details-label">Notes</div>
+                    {{ adjustment.notes }}
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="details-label">Status</div>
+                    <span class="badge bg-success">Completed</span>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <a href="{% url 'stock_out' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
