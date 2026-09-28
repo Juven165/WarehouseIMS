@@ -1,5 +1,10 @@
+from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.html import strip_tags
+
 from accounts.forms import RegisterForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -8,6 +13,7 @@ from .forms import ProfileForm
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
 
 User = get_user_model()
 
@@ -19,6 +25,36 @@ def register(request):
             user.set_password(form.cleaned_data["password"])
             user.is_active = True
             user.save()
+
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            domain = request.get_host()
+
+            send_verification_email(user, domain, uid, token)
+
+            # send activation email
+            subject = 'Activate Your WarehouseIMS Account'
+            html_content = render_to_string('accounts/activate_account.html', {
+                'user': user,
+                'uid': uid,
+                'token': token,
+                'domain': domain,
+            })
+
+            text_content = strip_tags(html_content)
+
+            email = EmailMultiAlternatives(
+                subject,
+                text_content,
+                'WarehouseIMS <juvenpinoy@gmail.com>',
+                [user.email],
+            )
+
+            email.attach_alternative(html_content, 'text/html')
+            email.send()
+
+            role_msg = user.role
+
             messages.success(request, 'Account created for ' + user.username)
             return redirect('login')
 
@@ -49,6 +85,46 @@ def dashboard(request):
             "Invalid username or account not found. Please register first."
         )
         return redirect('login')
+
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None in default_token_generator.check_token(user, token):
+        if not user.is_active:
+            user.is_active = True
+            user.save()
+            messages.success(request, "Account has been successfully activated! You are now able to log in.")
+        else:
+            messages.error(request, "Your account is already active. Please log in again.")
+        return redirect('login')
+
+    else:
+        messages.error(request, "Activation link is invalid. Please check your email and try again.")
+    return redirect('login')
+
+def send_verification_email(user, domain, uid, token):
+    subject = 'Activate your WarehouseIMS account'
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = [user.email]
+
+    html_content = render_to_string('account/activate_account.html', {
+        'user': user,
+        'domain': domain,
+        'uid': uid,
+        'token': token,
+    })
+
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, from_email, to)
+    email.attach_alternative(html_content,  'text/html')
+
+    email.send()
+
 
 def login_view(request):
     if request.method == "POST":
