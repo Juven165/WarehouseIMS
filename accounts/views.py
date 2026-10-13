@@ -1,3 +1,5 @@
+from fileinput import filename
+
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -94,8 +96,52 @@ def send_verification_email(user, domain, uid, token):
     email.send()
 
 def forgot_password(request):
-    pass
+    if request.method == "POST":
+        email = request.POST.get('email', '').strip()
 
+        try:
+            user = User.objects.get(email=email)
+            domain = request.get_host()
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            send_password_reset_email(user, domain, uid, token)
+        except User.DoesNotExist:
+            pass  # still show same message
+
+        messages.success(
+            request,
+            "If an account with that email exists, a reset link has been sent."
+        )
+        return redirect('login')
+
+    return render(request, 'accounts/forgot_password.html')
+
+def send_password_reset_email(user, domain, uid, token):
+    subject = 'Reset Your WarehouseIMS Password'
+    from_email = settings.DEFAULT_FROM_EMAIL
+
+    html_content = render_to_string('accounts/password_reset_email.html', {
+        'user': user,
+        'domain': domain,
+        'uid': uid,
+        'token': token,
+    })
+
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, from_email, [user.email],)
+
+    email.attach_alternative(html_content, 'text/html')
+
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'wims.png')
+
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo = MIMEImage(f.read())
+            logo.add_header('Content-ID', '<wims_logo>')
+            logo.add_header('Content-Disposition', 'inline', filename="wims.png")
+            email.attach(logo)
+    email.send()
 
 def dashboard(request):
     user = request.user

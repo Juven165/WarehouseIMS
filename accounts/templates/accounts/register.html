@@ -1,22 +1,11 @@
+{% extends 'main/base_auth.html' %}
+
 {% load static %}
 {% load widget_tweaks %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Register | WarehouseIMS{% endblock %}
 
-    <title>Register | Warehouse IMS</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;600;700&display=swap" rel="stylesheet">
-
+{% block content %}
     <style>
         body {
             background: linear-gradient(135deg, #475569 0%, #334155 100%);
@@ -160,9 +149,6 @@
            text-decoration: underline;
         }
     </style>
-</head>
-<body>
-
     <div class="register-wrapper">
         <div class="card">
             <h3 class="register-title mb-2"><i class="bi bi-person-plus-fill me-2"></i>Register</h3>
@@ -237,6 +223,4 @@
             });
         });
     </script>
-</body>
-</html>
-
+{% endblock %}

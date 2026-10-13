@@ -1,12 +1,10 @@
+{% extends 'main/base_auth.html' %}
 {% load widget_tweaks %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login | Warehouse IMS</title>
+{% block title %}Login | WarehouseIMS{% endblock %}
 
-    <style>
+{% block content %}
+ <style>
         *{
             margin:0;
             padding:0;
@@ -125,7 +123,7 @@
             transform: translateY(-50%);
             color:#94A3B8;
             cursor: pointer;
-            transform: 1.25rem;
+            font-size: 1.25rem;
         }
 
         .toggle-password:hover{
@@ -171,8 +169,6 @@
         }
 
     </style>
-</head>
-<body>
     <div class="login-wrapper">
         <div class="card">
             <h3 class="title"><i class="bi bi-box-arrow-right me-2"></i>Login</h3>
@@ -216,7 +212,7 @@
             <div class="links mt-4">
                 <p>
                     Forgot Password?<br>
-                    <a href="#">Forgot Password</a>
+                    <a href="{% url 'forgot_password'  %}">Forgot Password</a>
                 </p>
 
                 <p>
@@ -245,6 +241,4 @@
         this.classList.toggle("bi-eye-slash");
     });
 </script>
-
-</body>
-</html>
+{% endblock %}
