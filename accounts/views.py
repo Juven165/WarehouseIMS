@@ -1,10 +1,9 @@
 from fileinput import filename
-
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.utils.html import strip_tags
 from accounts.forms import RegisterForm
 from django.contrib.auth.decorators import login_required
@@ -16,6 +15,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 from email.mime.image import MIMEImage
+from django.http import HttpResponse
 import os
 
 User = get_user_model()
@@ -142,6 +142,36 @@ def send_password_reset_email(user, domain, uid, token):
             logo.add_header('Content-Disposition', 'inline', filename="wims.png")
             email.attach(logo)
     email.send()
+
+def password_reset(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()  # DECODE
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is None or not default_token_generator.check_token(user, token):
+        messages.error(request, 'Reset link is invalid or expired.')
+        return redirect('forgot_password')
+
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if not password or password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'accounts/reset_password.html')
+
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+            return render(request, 'accounts/reset_password.html')
+
+        user.set_password(password)
+        user.save()
+        messages.success(request, 'Password changed successfully. You can now log in.')
+        return redirect('login')
+
+    return render(request, 'accounts/reset_password.html')
 
 def dashboard(request):
     user = request.user

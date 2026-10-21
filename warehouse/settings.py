@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'suppliers',
     'accounts',
     'staff',
+    'adminpanel',
     
     'widget_tweaks',
 ]

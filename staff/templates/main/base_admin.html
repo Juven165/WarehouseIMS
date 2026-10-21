@@ -1,10 +1,208 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Warehouse IMS{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: #F5F7FA;
+        }
+
+        /* ===== TOP NAVBAR (full width) ===== */
+        .top-navbar {
+            background: #FFFFFF;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1100; /* higher than sidebar */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-section img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .logo-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+            color: #1F2937;
+        }
+
+        .right-section {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-logout {
+            background: #ff4d4f;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .btn-logout:hover {
+            background: #e43c3f;
+            color: #fff;
+        }
+
+        /* ===== SIDEBAR (below navbar) ===== */
+        .sidebar {
+            background: #FFFFFF;
+            position: fixed;
+            top: 70px;              /* same as navbar height */
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 70px);
+            padding: 20px 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .sidebar-title {
+            color: #1F2937;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        .sidebar h6 {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9CA3AF;
+            margin: 20px 0 8px;
+            padding: 0 25px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar a:hover {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border-left-color: #93C5FD;
+        }
+
+        .sidebar a.active {
+            background: linear-gradient(90deg, #2563EB, #1D4ED8);
+            color: #FFFFFF;
+            border-left-color: #60A5FA;
+            font-weight: 500;
+        }
+
+        .sidebar a.active i {
+            color: #FFFFFF;
+        }
+
+        /* ===== CONTENT ===== */
+        .content {
+            margin-left: 250px;
+            margin-top: 70px;   /* same as navbar height */
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+    </style>
 </head>
 <body>
+
+    <!-- TOP NAVBAR -->
+    <div class="top-navbar">
+        <div class="logo-section">
+            <img src="{% static 'images/wims.png' %}" alt="Warehouse IMS Logo">
+            <h3>Warehouse IMS</h3>
+        </div>
+        <div class="right-section">
+            <a href="{% url 'login' %}" class="btn btn-logout">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-title">
+            <i class="bi bi-person-workspace"></i> ADMIN PANEL
+        </div>
+
+        <a href="{% url 'admin_dashboard' %}"
+           class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="#">
+            <i class="bi bi-people"></i> Users
+        </a>
+        <a href="#">
+            <i class="bi bi-box"></i> Products
+        </a>
+        <a href="#">
+            <i class="bi bi-tags"></i> Categories
+        </a>
+        <a href="#">
+            <i class="bi bi-truck"></i> Suppliers
+        </a>
+        <a href="#">
+            <i class="bi bi-arrow-left-right"></i> Stock Transactions
+        </a>
+        <a href="#">
+            <i class="bi bi-clock-history"></i> Pending Approvals
+        </a>
+        <a href="#">
+            <i class="bi bi-file-earmark-bar-graph"></i> Reports
+        </a>
+        <a href="#">
+            <i class="bi bi-gear"></i> Settings
+        </a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 
 </body>
 </html>
