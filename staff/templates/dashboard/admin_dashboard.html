@@ -3,9 +3,133 @@
 {% block title %}Admin Dashboard | Warehouse IMS{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div class="dashboard-header">
-            <h3>Admin Dashboard</h3>
+<div class="container-fluid">
+    <div class="mb-4">
+        <h3 class="fw-semibold mb-0">Admin Dashboard</h3>
+        <p class="text-muted small mb-0">Warehouse IMS overview</p>
+    </div>
+
+    <div class="row g-3">
+        <!-- Total Users -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-3">
+                            <i class="bi bi-people-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Total Users</div>
+                            <div class="fs-4 fw-bold">{{ total_users|default:0 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Products -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-success bg-opacity-10 text-success p-3">
+                            <i class="bi bi-box-seam fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Total Products</div>
+                            <div class="fs-4 fw-bold">{{ total_products|default:0 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-warning bg-opacity-10 text-warning p-3">
+                            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Low Stock Alerts</div>
+                            <div class="fs-4 fw-bold">{{ low_stock_count|default:0 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Approvals -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-info bg-opacity-10 text-info p-3">
+                            <i class="bi bi-clipboard-check fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Pending Approvals</div>
+                            <div class="fs-4 fw-bold">{{ pending_approvals|default:0 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="recent-header">
+                    <h3 class="fw-semibold">
+                        Recent Transaction
+                    </h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Product</th>
+                                    <th>Type</th>
+                                    <th>Qty</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for recent in recent_transactions %}
+                                <tr>
+                                    <td>{{ recent.transaction_date|date:"M d, Y h:i A" }}</td>
+                                    <td>{{ recent.product.name }}</td>
+                                    <td>
+                                        {% if recent.transaction_type == 'Stock In' %}
+                                            <span class="badge bg-success">Stock In</span>
+                                        {% if recent.transaction_type == 'Adjustment' %}
+                                            <span class="badge bg-info">Adjustment</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Stock Out</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ recent.quantity|default:"0" }}</td>
+                                    <td>
+                                        {% if recent.status == 'Approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                        {% if recent.status == 'Pending' %}
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
