@@ -173,10 +173,12 @@
            class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
-        <a href="#">
+        <a href="{% url 'user_list' %}"
+            class="{% if request.resolver_match.url_name == 'user_list' %}active{% endif %}">
             <i class="bi bi-people"></i> Users
         </a>
-        <a href="#">
+        <a href="{% url 'product_list' %}"
+            class="{% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
             <i class="bi bi-box"></i> Products
         </a>
         <a href="#">

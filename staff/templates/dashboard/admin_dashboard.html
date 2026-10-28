@@ -79,54 +79,134 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row g-3 mt-2">
         <div class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="recent-header">
-                    <h3 class="fw-semibold">
-                        Recent Transaction
-                    </h3>
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center border-0 pt-3">
+                    <h5 class="fw-semibold mb-0">Recent Transactions</h5>
+                    <a href="#" class="text-primary text-decoration-none small fw-semibold">
+                        View All <i class="bi bi-arrow-right"></i>
+                    </a>
                 </div>
-
-                <div class="card-body">
+                <div class="card-body pt-0">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover align-middle mb-0">
                             <thead>
-                                <tr>
+                                <tr class="text-muted small">
                                     <th>Date</th>
                                     <th>Product</th>
                                     <th>Type</th>
                                     <th>Qty</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for recent in recent_transactions %}
                                 <tr>
-                                    <td>{{ recent.transaction_date|date:"M d, Y h:i A" }}</td>
-                                    <td>{{ recent.product.name }}</td>
+                                    <td class="small text-nowrap">
+                                        {{ recent.transaction_date|date:"M d, Y" }}<br>
+                                        <span class="text-muted">{{ recent.transaction_date|date:"h:i A" }}</span>
+                                    </td>
+                                    <td>
+                                        {% if recent.product %}
+                                            {{ recent.product.name }}
+                                        {% else %}
+                                            {{ recent.new_product_name|default:"—" }}
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         {% if recent.transaction_type == 'Stock In' %}
                                             <span class="badge bg-success">Stock In</span>
-                                        {% if recent.transaction_type == 'Adjustment' %}
+                                        {% elif recent.transaction_type == 'Adjustment' %}
                                             <span class="badge bg-info">Adjustment</span>
                                         {% else %}
                                             <span class="badge bg-danger">Stock Out</span>
                                         {% endif %}
                                     </td>
-                                    <td>{{ recent.quantity|default:"0" }}</td>
+                                    <td>{{ recent.quantity }}</td>
                                     <td>
                                         {% if recent.status == 'Approved' %}
                                             <span class="badge bg-success">Approved</span>
-                                        {% if recent.status == 'Pending' %}
-
+                                        {% elif recent.status == 'Pending' %}
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
                                     </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="{% url 'view_transaction' recent.id %}" class="btn btn-sm btn-outline-primary" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+
+                                            <a href="{% url 'delete_transaction' recent.id %}" class="btn btn-sm btn-outline-danger" title="Delete"
+                                               onclick="return confirm('Delete this transaction?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">No recent transactions...</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center border-0 pt-3">
+                    <h5 class="fw-semibold mb-0">Recent Activity</h5>
+                    <a href="#" class="text-primary text-decoration-none small fw-semibold">
+                        View All <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body pt-2">
+                    {% for item in recent_users %}
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                             style="width:40px;height:40px;
+                             {% if item.role == 'supplier' %}background:#ECFDF5;color:#059669;
+                             {% elif item.role == 'staff' %}background:#EFF6FF;color:#2563EB;
+                             {% else %}background:#F5F3FF;color:#7C3AED;{% endif %}">
+                            {% if item.role == 'supplier' %}
+                                <i class="bi bi-truck"></i>
+                            {% elif item.role == 'staff' %}
+                                <i class="bi bi-person-badge"></i>
+                            {% else %}
+                                <i class="bi bi-shield-lock"></i>
+                            {% endif %}
+                        </div>
+
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="fw-semibold small">
+                                {% if item.role == 'supplier' %}New Supplier Registered
+                                {% elif item.role == 'staff' %}New Staff Registered
+                                {% else %}New Admin Registered{% endif %}
+                            </div>
+                            <div class="text-muted text-truncate" style="font-size:0.8rem;">
+                                {{ item.email|default:item.username }}
+                            </div>
+                            <div class="text-muted" style="font-size:0.75rem;">
+                                {{ item.date_joined|date:"M d, Y h:i A" }}
+                            </div>
+                        </div>
+
+                        <span class="rounded-circle flex-shrink-0 mt-2"
+                              style="width:8px;height:8px;
+                              {% if item.role == 'supplier' %}background:#10B981;
+                              {% elif item.role == 'staff' %}background:#3B82F6;
+                              {% else %}background:#8B5CF6;{% endif %}"></span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center small py-4 mb-0">No recent activity...</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>

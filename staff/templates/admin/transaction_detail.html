@@ -1,0 +1,139 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Transaction Details | Warehouse IMS{% endblock %}
+
+{% block content %}
+<style>
+    .trans-card {
+        max-width: 720px;
+        margin: 30px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .trans-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.25rem;
+    }
+    .trans-value {
+        font-size: 1rem;
+        color: #111827;
+        font-weight: 500;
+    }
+</style>
+
+<div class="card trans-card">
+    <div class="card-header bg-primary text-white text-center py-3">
+        <h5 class="mb-0">
+            <i class="bi bi-receipt me-2"></i> Transaction Details
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row g-4">
+            <!-- Date -->
+            <div class="col-md-6">
+                <div class="trans-label">Date & Time</div>
+                <div class="trans-value">
+                    {{ transactions.transaction_date|date:"M d, Y h:i A" }}
+                </div>
+            </div>
+
+            <!-- Product -->
+            <div class="col-md-6">
+                <div class="trans-label">Product</div>
+                <div class="trans-value">
+                    {% if transactions.product %}
+                        {{ transactions.product.name }}
+                    {% else %}
+                        {{ transactions.new_product_name|default:"—" }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Type (FIXED: use transaction_type) -->
+            <div class="col-md-6">
+                <div class="trans-label">Type</div>
+                <div class="trans-value">
+                    {% if transactions.transaction_type == 'Stock In' %}
+                        <span class="badge bg-success">Stock In</span>
+                    {% elif transactions.transaction_type == 'Adjustment' %}
+                        <span class="badge bg-info">Adjustment</span>
+                        {% if transactions.adjustment_type %}
+                            <span class="badge bg-secondary ms-1">{{ transactions.adjustment_type }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge bg-danger">Stock Out</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="col-md-6">
+                <div class="trans-label">Quantity</div>
+                <div class="trans-value">{{ transactions.quantity }}</div>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+                <div class="trans-label">Status</div>
+                <div class="trans-value">
+                    {% if transactions.status == 'Approved' %}
+                        <span class="badge bg-success">Approved</span>
+                    {% elif transactions.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reference No -->
+            <div class="col-md-6">
+                <div class="trans-label">Reference No</div>
+                <div class="trans-value">{{ transactions.reference_no|default:"—" }}</div>
+            </div>
+
+            <!-- Supplier -->
+            <div class="col-md-6">
+                <div class="trans-label">Supplier</div>
+                <div class="trans-value">
+                    {% if transactions.supplier %}
+                        {{ transactions.supplier.name }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Staff -->
+            <div class="col-md-6">
+                <div class="trans-label">Handled By</div>
+                <div class="trans-value">
+                    {% if transactions.staff %}
+                        {{ transactions.staff.get_full_name|default:transactions.staff.username }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="col-12">
+                <div class="trans-label">Notes</div>
+                <div class="trans-value">{{ transactions.notes|default:"—" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white border-0 text-end pb-4 px-4">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+{% endblock %}
