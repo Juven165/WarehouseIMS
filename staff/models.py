@@ -39,7 +39,7 @@ class StockTransaction(models.Model):
 
     TRANSACTION_CHOICES = [
         (STOCK_IN, "Stock In"),
-        (STOCK_OUT, "Stock Out"),
+        (STOCK_OUT, "qStock Out"),
         (ADJUSTMENT, "Adjustment"),
     ]
 

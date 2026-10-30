@@ -181,7 +181,8 @@
             class="{% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
             <i class="bi bi-box"></i> Products
         </a>
-        <a href="#">
+        <a href="{% url 'category_list' %}"
+            class="{% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">
             <i class="bi bi-tags"></i> Categories
         </a>
         <a href="#">

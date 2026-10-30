@@ -173,6 +173,13 @@ def product_list(request):
     })
 
 @staff_member_required
+def product_details(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    return render(request, 'admin/product_details.html', {'product': product})
+
+
+@staff_member_required
 def add_product(request):
     if request.method == "POST":
         form = AddProductForm(request.POST)
@@ -185,3 +192,19 @@ def add_product(request):
     else:
         form = AddProductForm()
     return render(request, 'admin/add_product.html', {'form': form})
+
+@staff_member_required
+def category_list(request):
+    category = Category.objects.all()
+    product = Product.objects.all()
+
+    return render(request, 'admin/category.html', {
+        'category': category,
+        'product': product,
+    })
+
+@staff_member_required
+def category_details(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+
+    return render(request, 'admin/category_details.html')

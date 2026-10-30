@@ -96,12 +96,10 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="#" class="btn btn-sm btn-outline-primary" title="View">
+                                    <a href="{% url 'product_details' p.pk %}" class="btn btn-sm btn-outline-primary" title="View">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="#" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
+
                                     <a href="#" class="btn btn-sm btn-outline-danger" title="Delete"
                                        onclick="return confirm('Delete {{ p.name }}?')">
                                         <i class="bi bi-trash"></i>

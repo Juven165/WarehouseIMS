@@ -1,0 +1,116 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Product Details | Warehouse IMS{% endblock %}
+
+{% block content %}
+<style>
+    .product-card {
+        max-width: 720px;
+        margin: 30px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .product-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.25rem;
+    }
+    .product-value {
+        font-size: 1rem;
+        color: #111827;
+        font-weight: 500;
+    }
+</style>
+
+<div class="card product-card">
+    <div class="card-header bg-primary text-white text-center py-3">
+        <h5 class="mb-0">
+            <i class="bi bi-box-seam me-2"></i> Product Details
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="product-label">SKU</div>
+                <div class="product-value">{{ product.sku }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="product-label">Product Name</div>
+                <div class="product-value">{{ product.name }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="product-label">Category</div>
+                <div class="product-value">
+                    {{ product.category.name }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="product-label">Unit</div>
+                <div class="product-value">{{ product.unit }}</div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="product-label">Current Stock</div>
+                <div class="product-value">{{ product.current_stock }}</div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="product-label">Low Stock Threshold</div>
+                <div class="product-value">{{ product.low_stock }}</div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="product-label">Status</div>
+                <div class="product-value">
+                    {% if product.current_stock == 0 %}
+                        <span class="badge bg-danger">Out of Stock</span>
+                    {% elif product.current_stock <= product.low_stock %}
+                        <span class="badge bg-warning text-dark">Low Stock</span>
+                    {% else %}
+                        <span class="badge bg-success">In Stock</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="product-label">Supplier</div>
+                <div class="product-value">
+                    {% if product.supplier %}
+                        {{ product.supplier.name }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="product-label">Created</div>
+                <div class="product-value">
+                    {{ product.created_at|date:"M d, Y h:i A" }}
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="product-label">Description</div>
+                <div class="product-value">
+                    {{ product.description|default:"—" }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white border-0 text-end pb-4 px-4">
+        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+{% endblock %}

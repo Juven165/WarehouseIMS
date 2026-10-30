@@ -1,0 +1,61 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Category{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card-header">
+            <h3 class="fw-semibold">Category</h3>
+        </div>
+
+        <div class="d-flex justify-content-ends">
+            <a href="#" class="btn btn-primary">
+                <i class="bi bi-bookmark-plus-fill"></i> Add Category
+            </a>
+        </div>
+
+        <div class="table-responsive mt-4">
+            <table class="table align-middle text-center">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Total Products</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for cat in category %}
+                    <tr>
+                        <td>{{ cat.name }}</td>
+                        <td>{{ cat.description|default:"—" }}</td>
+                        <td>{{ cat.product_set.count }}</td>
+                        <td>
+                            {% if cat.status == 'Approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif cat.status == 'Pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {%  endif %}
+                        </td>
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{% url 'category_details' cat.pk %}" class="btn btn-outline-primary btn-small">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <a href="#" class="btn btn-outline-danger btn-small">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
