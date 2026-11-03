@@ -3,9 +3,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.db.models import F, Q
-
-from staff.forms import AddProductForm
-from staff.models import Product, StockTransaction, Category
+from staff.forms import AddProductForm, AddCategoryForm
+from staff.models import Product, StockTransaction, Category, Supplier
 
 User = get_user_model()
 
@@ -207,4 +206,53 @@ def category_list(request):
 def category_details(request, pk):
     category = get_object_or_404(Category, pk=pk)
 
-    return render(request, 'admin/category_details.html')
+    return render(request, 'admin/category_details.html', {'category': category})
+
+@staff_member_required
+def delete_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+
+    category.delete()
+    messages.success(request, f"Category {category.name} deleted successfully!")
+    return redirect('category_list')
+
+@staff_member_required
+def add_category(request):
+    if request.method == 'POST':
+        form = AddCategoryForm(request.POST)
+        if form.is_valid:
+            category = form.save()
+            messages.success(request, f'Category {category.name} added successfully!')
+            return redirect('category_list')
+    else:
+        form = AddProductForm()
+    return render(request, 'admin/add_category.html', {'form': form})
+
+@staff_member_required
+def supplier_list(request):
+    suppliers = Supplier.objects.all().order_by('name')
+
+    query = request.GET.get('q', '').strip()
+    status = request.GET.get('status', '').strip()
+
+    if query:
+        suppliers = suppliers.filter(
+            Q(name__icontains=query) |
+            Q(contact_person__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query)
+        )
+
+    if status == 'active':
+        suppliers = suppliers.filter(is_active=True)
+    elif status == 'inactive':
+        suppliers = suppliers.filter(is_active=False)
+
+    return render(request, 'admin/supplier_list.html', {
+        'suppliers': suppliers,
+        'query': query,
+        'selected_status': status,
+    })
+
+
+

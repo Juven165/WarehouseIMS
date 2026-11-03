@@ -1,0 +1,104 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Supplier List{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h3 class="fw-semibold">Supplier List</h3>
+            </div>
+            <a href="#" class="btn btn-primary">Add Supplier</a>
+        </div>
+
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label small text-muted">Search</label>
+                        <input type="text"
+                               name="q"
+                               class="form-control"
+                               placeholder="Search name, contact, email..."
+                               value="{{ query }}">
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="form-label small text-muted">Status</label>
+                        <select name="status" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
+                            <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel me-1"></i> Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Supplier Name</th>
+                                <th>Contact Person</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Notes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for spl in suppliers %}
+                            <tr>
+                                <td>{{ spl.name }}</td>
+                                <td>{{ spl.contact_person }}</td>
+                                <td>{{ spl.phone }}</td>
+                                <td>{{ spl.email }}</td>
+                                <td>{{ spl.notes }}</td>
+                                <td>
+                                    {% if spl.status == 'is_active' %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Inactive</span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="#" class="btn btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="#" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-muted text-center py-4">
+                                    No supplier found...
+                                </td>
+                            </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

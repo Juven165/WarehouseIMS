@@ -185,7 +185,8 @@
             class="{% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">
             <i class="bi bi-tags"></i> Categories
         </a>
-        <a href="#">
+        <a href="{% url 'supplier_list' %}"
+            class="{% if request.resolver_match.url_name == 'supplier_list' %}selected{% endif %}">
             <i class="bi bi-truck"></i> Suppliers
         </a>
         <a href="#">

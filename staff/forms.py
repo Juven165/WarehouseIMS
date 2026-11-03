@@ -1,5 +1,5 @@
 from django import forms
-from .models import StockTransaction, Product, Category
+from .models import StockTransaction, Product, Category, Supplier
 
 class StockInForm(forms.ModelForm):
     class Meta:
@@ -170,5 +170,47 @@ class AddCategoryForm(forms.ModelForm):
             }),
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
+            }),
+        }
+
+class AddSupplierForm(forms.ModelForm):
+    class Meta:
+        model = Supplier
+        fields = [
+            'name',
+            'contact_person',
+            'phone',
+            'email',
+            'address',
+            'notes',
+            'is_active',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter supplier name...',
+            }),
+            'contact_person': forms.TextInput(attrs={  # Text, hindi Number
+                'class': 'form-control',
+                'placeholder': 'Contact person name',
+            }),
+            'phone': forms.TextInput(attrs={  # Text — may + at 0
+                'class': 'form-control',
+                'placeholder': 'e.g. 09171234567',
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'email@example.com',
+            }),
+            'address': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Optional address',
+            }),
+            'notes': forms.Select(attrs={  # choices field
+                'class': 'form-select',
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
             }),
         }

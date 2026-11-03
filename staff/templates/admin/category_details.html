@@ -3,5 +3,70 @@
 {% block title %} Category Details | Warehouse IMS{% endblock %}
 
 {% block content %}
+    <style>
+        .category-card {
+            max-width: 700px;
+            margin: 30px auto;
+            border: none:
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
 
+        .category-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            text-spacing: 0.4px;
+        }
+    </style>
+    <div class="card category-card">
+        <div class="card-header bg-primary text-center text-white">
+            <h3 class="fw-semibold">Category Details</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-6 mb-4">
+                    <div class="category-label">Name</div>
+                    <div class="category-value">
+                        {{ category.name }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="category-label">Description</div>
+                    <div class="category-value">
+                        {{ category.description }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="category-label">Total Products</div>
+                    <div class="category-value">
+                        {{ category.product_set.count }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="category-label">Status</div>
+                    <div class="category-value">
+                        {% if category.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif category.status == 'Pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{% url 'category_list' %}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}
