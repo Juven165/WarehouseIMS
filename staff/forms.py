@@ -190,11 +190,11 @@ class AddSupplierForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Enter supplier name...',
             }),
-            'contact_person': forms.TextInput(attrs={  # Text, hindi Number
+            'contact_person': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Contact person name',
             }),
-            'phone': forms.TextInput(attrs={  # Text — may + at 0
+            'phone': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'e.g. 09171234567',
             }),
@@ -207,7 +207,7 @@ class AddSupplierForm(forms.ModelForm):
                 'rows': 2,
                 'placeholder': 'Optional address',
             }),
-            'notes': forms.Select(attrs={  # choices field
+            'notes': forms.Select(attrs={
                 'class': 'form-select',
             }),
             'is_active': forms.CheckboxInput(attrs={

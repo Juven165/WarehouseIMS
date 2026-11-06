@@ -17,5 +17,6 @@ urlpatterns = [
     path('delete_category/<int:pk>/', views.delete_category, name='delete_category'),
     path('add-category/', views.add_category, name='add_categories'),
     path('supplier-list/', views.supplier_list, name='supplier_list'),
-
+    path('add-supplier/', views.add_supplier, name='add_supplier'),
+    path('stock-transactions/', views.stock_transactions, name='stock_transactions'),
 ]

@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.db.models import F, Q
-from staff.forms import AddProductForm, AddCategoryForm
+from staff.forms import AddProductForm, AddCategoryForm, AddSupplierForm
 from staff.models import Product, StockTransaction, Category, Supplier
 
 User = get_user_model()
@@ -253,6 +253,52 @@ def supplier_list(request):
         'query': query,
         'selected_status': status,
     })
+
+@staff_member_required
+def add_supplier(request):
+    if request.method == 'POST':
+        form = AddSupplierForm(request.POST)
+        if form.is_valid:
+            supplier = form.save()
+            messages.success(request, f"{supplier.name} added successfully!")
+            return redirect('supplier_list')
+    else:
+        form = AddSupplierForm()
+    return render(request, 'admin/add_supplier.html', {'form': form })
+
+@staff_member_required
+def stock_transactions(request):
+    transactions = (
+        StockTransaction.objects
+        .select_related('product', 'supplier', 'staff')
+        .order_by('-transaction_date')
+    )
+
+    query = request.GET.get('q', '').strip()
+    transaction_type = request.GET.get('transaction_type', '').strip()
+    status = request.GET.get('status', '').strip()
+
+    if query:
+        transactions = transactions.filter(
+            Q(product__name__icontains=query) |
+            Q(product__sku__icontains=query) |
+            Q(new_product_name__icontains=query) |
+            Q(reference_no__icontains=query)
+        )
+
+    if transaction_type:
+        transactions = transactions.filter(transaction_type=transaction_type)
+
+    if status:
+        transactions = transactions.filter(status=status)
+
+    return render(request, 'admin/stock_transactions.html', {
+        'transactions': transactions,
+        'query': query,
+        'selected_type': transaction_type,
+        'selected_status': status,
+    })
+
 
 
 
