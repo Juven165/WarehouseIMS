@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.db.models import F, Q
 from staff.forms import AddProductForm, AddCategoryForm, AddSupplierForm
 from staff.models import Product, StockTransaction, Category, Supplier
+from django.utils.timezone import make_aware
+from datetime import datetime
 
 User = get_user_model()
 
@@ -277,6 +279,8 @@ def stock_transactions(request):
     query = request.GET.get('q', '').strip()
     transaction_type = request.GET.get('transaction_type', '').strip()
     status = request.GET.get('status', '').strip()
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
 
     if query:
         transactions = transactions.filter(
@@ -292,11 +296,27 @@ def stock_transactions(request):
     if status:
         transactions = transactions.filter(status=status)
 
+    if date_from:
+        try:
+            start = datetime.strptime(date_from, '%Y-%m-%d')
+            transactions = transactions.filter(transaction_date__date__gte=start.date())
+        except ValueError:
+            pass
+
+    if date_to:
+        try:
+            end = datetime.strptime(date_to, '%Y-%m-%d')
+            transactions = transactions.filter(transaction_date__date__lte=end.date())
+        except ValueError:
+            pass
+
     return render(request, 'admin/stock_transactions.html', {
         'transactions': transactions,
         'query': query,
         'selected_type': transaction_type,
         'selected_status': status,
+        'date_from': date_from,
+        'date_to': date_to,
     })
 
 

@@ -189,7 +189,8 @@
             class="{% if request.resolver_match.url_name == 'supplier_list' %}selected{% endif %}">
             <i class="bi bi-truck"></i> Suppliers
         </a>
-        <a href="#">
+        <a href="{% url 'stock_transactions' %}"
+            class="{% if request.resolver_match.url_name == 'stock_transactions' %}selected{% endif %}">
             <i class="bi bi-arrow-left-right"></i> Stock Transactions
         </a>
         <a href="#">
