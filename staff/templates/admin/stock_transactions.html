@@ -60,7 +60,7 @@
     <div class="card shadow-sm">
     <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover text-center">
                     <thead>
                         <tr>
                             <th>Date & Time</th>
@@ -78,9 +78,52 @@
                         <tr>
                             <td>
                                 <div class="fw-semibold">{{ trans.transaction_date|date:"M d, Y h:i A" }}</div>
+                                <small class="text-muted">{{ trans.reference_no }}</small>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">{{ trans.product.name|default:"—" }}</div>
                                 <small class="text-muted">{{ trans.product.sku }}</small>
                             </td>
-                            <td></td>
+                            <td>
+                                {% if trans.transaction_type == "Stock In" %}
+                                    <span class="badge bg-success">Stock In</span>
+                                {% elif trans.transaction_type == "Stock Out" %}
+                                    <span class="badge bg-danger">Stock Out</span>
+                                {% elif trans.transaction_type == "Adjustment" %}
+                                {% if trans.adjustment_type == "Increase" %}
+                                        <span class="badge bg-primary">Adjustment (+)</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Adjustment (-)</span>
+                                        {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ trans.transaction_type }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ trans.quantity }}</td>
+                            <td>{{ trans.supplier.name|default:"—" }}</td>
+                            <td>{{ trans.reference_no }}</td>
+                            <td>
+                                {% if trans.status == 'Approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif trans.status == 'Pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <a href="{% url 'view_transaction_details' trans.id %}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a href="#" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

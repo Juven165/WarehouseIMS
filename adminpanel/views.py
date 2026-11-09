@@ -319,6 +319,11 @@ def stock_transactions(request):
         'date_to': date_to,
     })
 
+@staff_member_required
+def view_transaction_details(request, transaction_id):
+    transactions = get_object_or_404(StockTransaction, pk=transaction_id)
+    return render(request, 'admin/view_transactions_details.html', {'transactions': transactions})
+
 
 
 

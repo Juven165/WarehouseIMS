@@ -186,11 +186,11 @@
             <i class="bi bi-tags"></i> Categories
         </a>
         <a href="{% url 'supplier_list' %}"
-            class="{% if request.resolver_match.url_name == 'supplier_list' %}selected{% endif %}">
+            class="{% if request.resolver_match.url_name == 'supplier_list' %}active{% endif %}">
             <i class="bi bi-truck"></i> Suppliers
         </a>
         <a href="{% url 'stock_transactions' %}"
-            class="{% if request.resolver_match.url_name == 'stock_transactions' %}selected{% endif %}">
+            class="{% if request.resolver_match.url_name == 'stock_transactions' %}active{% endif %}">
             <i class="bi bi-arrow-left-right"></i> Stock Transactions
         </a>
         <a href="#">

@@ -1,0 +1,85 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Transaction Details{% endblock %}
+
+{% block content %}
+    <style>
+        .details-card {
+            max-width: 700px;
+            margin: 30px auto;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .details-label {
+            font-size: 0.75rem;
+        }
+    </style>
+    <div class="card details-card">
+        <div class="card-header bg-primary text-center text-white">
+            Transaction Details
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col-md-5 mb-3">
+                    <div class="details-label">Date</div>
+                    <div class="details-value">{{ transactions.transaction_date|date:"M d, Y h:i A" }}</div>
+                    <br><small class="text-muted">{{ transactions.reference_no }}</small>
+                </div>
+
+                <div class="col-md-5 mb-3">
+                    <div class="details-label">Product</div>
+                    <div class="details-value">{{ transactions.product.name }}</div>
+                    <br><small class="text-muted">{{ transactions.product.sku }}</small>
+                </div>
+
+                <div class="col-md-5 mb-3">
+                    <div class="details-label">Type</div>
+                    <div class="details-value">
+                        {% if transactions.transaction_type == 'Stock In' %}
+                            <span class="badge bg-success">Stock In</span>
+                        {% elif transactions.transaction_type == 'Adjustment' %}
+                            <span class="badge bg-">Adjustment</span>
+                        {% else %}
+                            <span class="badge bg-danger">Stock Out</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-5 mb-3">
+                    <div class="details-label">Quantity</div>
+                    <div class="details-value">{{ transactions.quantity }}</div>
+                </div>
+
+                <div class="col-md-5 mb-3">
+                    <div class="details-label">Supplier</div>
+                    <div class="details-value">{{ transactions.supplier.name}}</div>
+                </div>
+
+                <div class="col-md-5 mb-3">
+                    <div class="details-label">Reference No</div>
+                    <div class="details-value">{{ transactions.reference_no }}</div>
+                </div>
+
+                <div class="col-md-5 mb-3">
+                    <div class="details-label">Status</div>
+                    <div class="details-value">
+                        {% if transactions.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif transactions.status == 'Pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 text-end pb-4 px-4">
+                    <a href="{% url 'stock_transactions' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

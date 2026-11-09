@@ -19,4 +19,5 @@ urlpatterns = [
     path('supplier-list/', views.supplier_list, name='supplier_list'),
     path('add-supplier/', views.add_supplier, name='add_supplier'),
     path('stock-transactions/', views.stock_transactions, name='stock_transactions'),
+    path('view-transaction-details/<int:transaction_id>/', views.view_transaction_details, name='view_transaction_details'),
 ]
