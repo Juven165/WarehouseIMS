@@ -193,7 +193,8 @@
             class="{% if request.resolver_match.url_name == 'stock_transactions' %}active{% endif %}">
             <i class="bi bi-arrow-left-right"></i> Stock Transactions
         </a>
-        <a href="#">
+        <a href="{% url 'pending_approvals' %}"
+            class="{% if request.resolver_match.url_name == 'pending_approvals' %}active{% endif %}">
             <i class="bi bi-clock-history"></i> Pending Approvals
         </a>
         <a href="#">

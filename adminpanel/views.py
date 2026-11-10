@@ -322,7 +322,56 @@ def stock_transactions(request):
 @staff_member_required
 def view_transaction_details(request, transaction_id):
     transactions = get_object_or_404(StockTransaction, pk=transaction_id)
-    return render(request, 'admin/view_transactions_details.html', {'transactions': transactions})
+    return render(request, 'admin/view_transactions_details.html', {
+        'transactions': transactions
+    })
+
+@staff_member_required
+def pending_approvals(request):
+    approvals = (
+        StockTransaction.objects
+        .filter(status='Pending')
+        .select_related('supplier', 'product', 'staff')
+        .order_by('-transaction_date')
+    )
+
+    query = request.GET.get('q', '').strip()
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
+
+    if query:
+        approvals = approvals.filter(
+            Q(product__name__icontains=query) |
+            Q(product__sku__icontains=query) |
+            Q(new_product_name__icontains=query) |
+            Q(supplier__name__icontains=query) |
+            Q(reference_no__icontains=query)
+        )
+
+    if date_from:
+        try:
+            start = datetime.strptime(date_from, '%Y-%m-%d')
+            approvals = approvals.filter(
+                transaction_date__date__gte=start.date()  # field name + gte
+            )
+        except ValueError:
+            pass
+
+    if date_to:
+        try:
+            end = datetime.strptime(date_to, '%Y-%m-%d')
+            approvals = approvals.filter(
+                transaction_date__date__lte=end.date()
+            )
+        except ValueError:
+            pass
+
+    return render(request, 'admin/pending_approvals.html', {
+        'approvals': approvals,
+        'query': query,
+        'date_from': date_from,
+        'date_to': date_to,
+    })
 
 
 
