@@ -1,0 +1,86 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Approval Details{% endblock %}
+
+{% block content %}
+    <style>
+        .details-card {
+            max-width: 700px;
+            margin: 30px auto;
+            border; none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .details-value {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+
+        }
+    </style>
+    <div class="card details-card">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="fw-semibold">Approval Details</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="details-label">Date & Time</div>
+                    <div class="details-value">
+                        {{ transaction.transaction_date|default:"Y d, M h:i A"}}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="details-label">Supplier</div>
+                    <div class="details-value">
+                        {{ transaction.supplier.name }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="details-label">Quantity</div>
+                    <div class="details-value">
+                        {{ transaction.quantity }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="details-label">Reference No</div>
+                    <div class="details-value">
+                        {{ transaction.reference_no }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="details-label">Notes</div>
+                    <div class="details-value">
+                        {{ transaction.notes }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="details-label">Status</div>
+                    <div class="details-value">
+                        {% if transaction.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif transaction.status == 'Pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 text-end pb-4 px-4">
+                    <a href="{% url 'pending_approvals' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-bar-left"></i>Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -373,6 +373,60 @@ def pending_approvals(request):
         'date_to': date_to,
     })
 
+@staff_member_required
+def approve_transaction(request, transaction_id):
+    transaction = get_object_or_404(
+        StockTransaction,
+        id=transaction_id,
+        status='Pending'
+    )
+
+    if not transaction.product:
+        messages.error(
+            request,
+            f'Cannot approve "{transaction.new_product_name or "this delivery"}". '
+            'Create/link the product first, then approve again.'
+        )
+        return redirect('pending_approvals')
+
+    product = transaction.product
+    product.current_stock += transaction.quantity  # current_stock, hindi current_status
+    product.save()
+
+    transaction.status = 'Approved'
+    transaction.staff = request.user
+    transaction.save()
+
+    messages.success(request, f'"{product.name}" approved successfully.')
+    return redirect('pending_approvals')
+
+
+@staff_member_required
+def reject_transaction(request, transaction_id):
+    transaction = get_object_or_404(
+        StockTransaction,
+        id=transaction_id,
+        status='Pending'
+    )
+
+    transaction.status = 'Rejected'
+    transaction.staff = request.user
+    transaction.save()
+
+    name = (
+        transaction.product.name
+        if transaction.product
+        else (transaction.new_product_name or 'Delivery')
+    )
+    messages.warning(request, f'"{name}" has been rejected.')
+    return redirect('pending_approvals')
+
+@staff_member_required
+def view_transaction(request, transaction_id):
+    transaction = get_object_or_404(StockTransaction, pk=transaction_id)
+    return render(request, 'admin/approvals_details.html', {'transaction': transaction})
+
+
 
 
 

@@ -510,7 +510,7 @@ def approve_transaction(request, pk):
         transaction.staff = request.user
         transaction.save()
 
-        messages.success(request, f'"{product.name}" has been approved successfully!')
+        messages.success(request, f'"{product.name}" has been approvexd successfully!')
 
     else:
         messages.error(

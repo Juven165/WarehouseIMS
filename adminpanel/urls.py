@@ -21,4 +21,7 @@ urlpatterns = [
     path('stock-transactions/', views.stock_transactions, name='stock_transactions'),
     path('view-transaction-details/<int:transaction_id>/', views.view_transaction_details, name='view_transaction_details'),
     path('pending-approvals/', views.pending_approvals, name='pending_approvals'),
+    path('approved-transactions/<int:transaction_id>/', views.approve_transaction, name='approved_transactions'),
+    path('reject-transactions/<int:transaction_id>/', views.reject_transaction, name='reject_transactions'),
+    path('view-transaction/<int:transaction_id>/', views.view_transaction, name='view_transaction'),
 ]
