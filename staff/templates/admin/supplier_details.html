@@ -1,0 +1,91 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Supplier Details{% endblock %}
+
+{% block content %}
+    <style>
+        .details-card {
+            max-width: 700px;
+            margin: 30px auto;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .details-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .details-value {
+            font-size: 1rem;
+            color: #111827;
+            font-weight: 500;
+            
+        }
+    </style>
+    <div class="card details-card">
+        <div class="card-header bg-primary text-center text-white">
+            <h3 class="fw-semibold">Supplier Details</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="details-label">Supplier Name</div>
+                    <div class="details-value">
+                        {{ supplier.name }}
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="details-label">Contact Person</div>
+                    <div class="details-value">
+                        {{ supplier.contact_person|default:"—" }}
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="details-label">Phone</div>
+                    <div class="details-value">
+                        {{ supplier.phone|default:"—" }}
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="details-label">Email</div>
+                    <div class="details-value">
+                        {{ supplier.email }}
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="details-label">Notes</div>
+                    <div class="details-value">
+                        {{ supplier.notes }}
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="details-label">Status</div>
+                    <div class="details-value">
+                        {% if supplier.status == 'is_active' %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white border-0 text-end pb-4 px-4">
+            <a href="{% url 'supplier_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+{% endblock %}

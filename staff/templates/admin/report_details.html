@@ -1,0 +1,127 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Report Details | Warehouse IMS{% endblock %}
+
+{% block content %}
+<style>
+    .details-card {
+        max-width: 720px;
+        margin: 30px auto;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .details-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.25rem;
+    }
+    .details-value {
+        font-size: 1rem;
+        color: #111827;
+        font-weight: 500;
+    }
+</style>
+
+<div class="card details-card">
+    <div class="card-header bg-primary text-white text-center py-3">
+        <h5 class="mb-0">
+            <i class="bi bi-file-earmark-text me-2"></i> Report Details
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="details-title">Date & Time</div>
+                <div class="details-value">
+                    {{ report.transaction_date|date:"M d, Y h:i A" }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="details-title">Type</div>
+                <div class="details-value">
+                    {% if report.transaction_type == "Stock In" %}
+                        <span class="badge bg-success">Stock In</span>
+                    {% elif report.transaction_type == "Adjustment" %}
+                        <span class="badge bg-info">Adjustment</span>
+                    {% else %}
+                        <span class="badge bg-danger">Stock Out</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="details-title">Product</div>
+                <div class="details-value">
+                    {% if report.product %}
+                        {{ report.product.name }}
+                    {% else %}
+                        {{ report.new_product_name|default:"—" }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="details-title">Quantity</div>
+                <div class="details-value">{{ report.quantity }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="details-title">Supplier</div>
+                <div class="details-value">
+                    {% if report.supplier %}
+                        {{ report.supplier.name }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="details-title">Status</div>
+                <div class="details-value">
+                    {% if report.status == "Approved" %}
+                        <span class="badge bg-success">Approved</span>
+                    {% elif report.status == "Pending" %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="details-title">Reference No</div>
+                <div class="details-value">{{ report.reference_no|default:"—" }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="details-title">Handled By</div>
+                <div class="details-value">
+                    {% if report.staff %}
+                        {{ report.staff.get_full_name|default:report.staff.username }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="details-title">Notes</div>
+                <div class="details-value">{{ report.notes|default:"—" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white border-0 text-end pb-4 px-4">
+        <a href="{% url 'reports' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+{% endblock %}

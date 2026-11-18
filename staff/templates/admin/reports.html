@@ -1,0 +1,121 @@
+{% extends 'main/base_admin.html' %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="mb-3">
+            <h3 class="fw-semibold mb-0">Reports</h3>
+            <p class="text-muted small mb-0">Inventory and transaction summaries</p>
+        </div>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Search</label>
+                        <input type="text"
+                                name="q"
+                                class="form-control"
+                                placeholder="Search product, supplier..."
+                                value="{{ query }}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Type</label>
+                        <select name="transaction_type" class="form-select">
+                            <option value="">All Types</option>
+                            <option value="Stock In" {% if selected_type == "Stock In" %}selected{% endif %}>Stock In</option>
+                            <option value="Stock Out" {% if selected_type == "Stock Out" %}selected{% endif %}>Stock Out</option>
+                            <option value="Adjustment" {% if selected_type == "Adjustment" %}selected{% endif %}>Adjustment</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Date From</label>
+                        <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Date To</label>
+                        <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i>Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header">
+                <h5>All Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover text-center">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Type</th>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Supplier</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in reports %}
+                            <tr>
+                                <td>{{ report.transaction_date|default:"M d, Y h:i A " }}</td>
+                                <td>
+                                    {% if report.transaction_type == 'Stock In' %}
+                                        <span class="badge bg-success">Stock In</span>
+                                    {% elif report.transaction_type == 'Adjustment' %}
+                                        <span class="badge bg-info">Adjustment</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Stack Out</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ report.product.name }}</td>
+                                <td>{{ report.quantity }}</td>
+                                <td>{{ report.supplier.name }}</td>
+                                <td>
+                                    {% if report.status == 'Approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                    {% elif report.status == 'Pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <a href="{% url 'reports_details' report.id %}" class="btn btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="#" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    No reports found...
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

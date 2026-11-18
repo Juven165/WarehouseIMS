@@ -566,3 +566,6 @@ def add_category(request):
     return render(request, 'staff/add_category.html', {
         'form': form
     })
+
+def staff_profile(request):
+    pass

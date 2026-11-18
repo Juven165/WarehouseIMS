@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.db.models import F, Q
 from staff.forms import AddProductForm, AddCategoryForm, AddSupplierForm
 from staff.models import Product, StockTransaction, Category, Supplier
-from django.utils.timezone import make_aware
+from accounts.models import Profile
+from accounts.forms import ProfileForm
 from datetime import datetime
 
 User = get_user_model()
@@ -269,6 +270,11 @@ def add_supplier(request):
     return render(request, 'admin/add_supplier.html', {'form': form })
 
 @staff_member_required
+def supplier_details(request, supplier_id):
+    suppliers = get_object_or_404(Supplier, id=supplier_id)
+    return render(request, 'admin/supplier_details.html', {'supplier': suppliers})
+
+@staff_member_required
 def stock_transactions(request):
     transactions = (
         StockTransaction.objects
@@ -352,7 +358,7 @@ def pending_approvals(request):
         try:
             start = datetime.strptime(date_from, '%Y-%m-%d')
             approvals = approvals.filter(
-                transaction_date__date__gte=start.date()  # field name + gte
+                transaction_date__date__gte=start.date()
             )
         except ValueError:
             pass
@@ -390,7 +396,7 @@ def approve_transaction(request, transaction_id):
         return redirect('pending_approvals')
 
     product = transaction.product
-    product.current_stock += transaction.quantity  # current_stock, hindi current_status
+    product.current_stock += transaction.quantity
     product.save()
 
     transaction.status = 'Approved'
@@ -426,7 +432,70 @@ def view_transaction(request, transaction_id):
     transaction = get_object_or_404(StockTransaction, pk=transaction_id)
     return render(request, 'admin/approvals_details.html', {'transaction': transaction})
 
+@staff_member_required
+def report(request):
+    reports = (
+        StockTransaction.objects
+        .select_related('product', 'staff', 'supplier')
+        .order_by('-transaction_date')
+    )
 
+    query = request.GET.get('q', '').strip()
+    transaction_type = request.GET.get('transaction_type', '').strip()
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
 
+    if query:
+        reports = reports.filter(
+            Q(product__name__icontains=query) |
+            Q(product__sku__icontains=query) |
+            Q(supplier__name__icontains=query) |
+            Q(reference_no__icontains=query)
+        )
 
+    if transaction_type:
+        reports = reports.filter(transaction_type=transaction_type)
 
+    if date_from:
+        try:
+            start = datetime.strptime(date_from, '%Y-%m-%d')
+            reports = reports.filter(transaction_date__date__gte=start.date())
+        except ValueError:
+            pass
+
+    if date_to:
+        try:
+            end = datetime.strptime(date_to, '%Y-%m-%d')
+            reports = reports.filter(transaction_date__date__lte=end.date())
+        except ValueError:
+            pass
+
+    return render(request, 'admin/reports.html', {
+        'reports': reports,
+        'query': query,
+        'selected_type': transaction_type,
+        'date_from': date_from,
+        'date_to': date_to,
+    })
+
+@staff_member_required
+def reports_details(request,  report_id):
+    report = get_object_or_404(StockTransaction, id=report_id)
+    return render(request, 'admin/report_details.html', {'report': report})
+
+@staff_member_required
+def profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        forms = ProfileForm(request.POST, request.FILES, instance=profile)
+        if forms.is_valid():
+            forms.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('admin_profile')
+    else:
+        forms = ProfileForm(instance=profile)
+    return render(request, 'admin/profile.html', {
+        'forms': forms,
+        'profile': profile,
+    })

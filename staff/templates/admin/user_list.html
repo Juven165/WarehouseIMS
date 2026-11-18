@@ -85,26 +85,30 @@
 
                             <td>
                                 <div class="d-flex justify-content-center gap-1 flex-wrap">
-                                    {% if user.is_active %}
-                                        <a href="{% url 'deactivate' user.id %}"
-                                           class="btn btn-sm btn-outline-warning"
-                                           title="Deactivate">
-                                            <i class="bi bi-person-x"></i> Deactivate
+                                    {% if not user.is_superuser %}
+                                        {% if user.is_active %}
+                                            <a href="{% url 'deactivate' user.id %}"
+                                               class="btn btn-sm btn-outline-warning"
+                                               title="Deactivate">
+                                                <i class="bi bi-person-x"></i> Deactivate
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'activate' user.id %}"
+                                               class="btn btn-sm btn-outline-success"
+                                               title="Activate">
+                                                <i class="bi bi-person-check"></i> Activate
+                                            </a>
+                                        {% endif %}
+
+                                        <a href="{% url 'delete_user' user.id %}"
+                                           class="btn btn-sm btn-outline-danger"
+                                           title="Delete"
+                                           onclick="return confirm('Delete user {{ user.username }}?')">
+                                            <i class="bi bi-trash"></i>
                                         </a>
                                     {% else %}
-                                        <a href="{% url 'activate' user.id %}"
-                                           class="btn btn-sm btn-outline-success"
-                                           title="Activate">
-                                            <i class="bi bi-person-check"></i> Activate
-                                        </a>
+                                        <span class="badge bg-danger">Protected</span>
                                     {% endif %}
-
-                                    <a href="{% url 'delete_user' user.id %}"
-                                       class="btn btn-sm btn-outline-danger"
-                                       title="Delete"
-                                       onclick="return confirm('Delete user {{ user.username }}?')">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -119,7 +123,5 @@
                 </table>
             </div>
         </div>
-
-
     </div>
 {% endblock %}
