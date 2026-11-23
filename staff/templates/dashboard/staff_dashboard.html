@@ -5,33 +5,6 @@
 {% block title %}Staff Dashboard | Warehouse IMS{% endblock %}
 
 {% block content %}
-<style>
-    .title h3 {
-        font-size: 30px;
-    }
-     .title .warehouse {
-        font-size: 15px;
-     }
-
-    .card {
-        padding: 24px;
-        border-radius:14px;
-        justify-content:space-between;
-        align-items: center;
-        transition:0.25s ease;
-    }
-
-    .card i {
-        font-size: 24px;
-        margin-bottom: 8px;
-    }
-
-    .card h3 {
-        margin-top: 5px;
-        margin-bottom: 0;
-        font-weight: 600;
-    }
-</style>
 <div class="container-fluid">
 
     <div class="title">
@@ -43,52 +16,93 @@
         </div>
     </div>
 
-    <!-- FIRST ROW -->
-    <div class="row g-4 mt-2">
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm text-center bg-white">
-                <i class="bi bi-box-seam"></i>
-                <div>Total Products</div>
-                <h3>{{ total_products }}</h3>
+    <div class="row g-3">
+        <!-- Total Users -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-3">
+                            <i class="bi bi-people-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Total Products</div>
+                            <div class="fs-4 fw-bold">{{ total_products }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm text-center bg-white">
-                <i class="bi bi-boxes"></i>
-                <div>Total Stock</div>
-                <h3>{{ total_stock }}</h3>
+        <!-- Total Products -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-success bg-opacity-10 text-success p-3">
+                            <i class="bi bi-box-seam fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Total Products</div>
+                            <div class="fs-4 fw-bold">{{ total_products|default:0 }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm text-center bg-white">
-                <i class="bi bi-exclamation-triangle"></i>
-                <div>Low Stock Products</div>
-                <h3>{{ low_stock_products }}</h3>
+        <!-- Low Stock -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-warning bg-opacity-10 text-warning p-3">
+                            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Low Stock Products</div>
+                            <div class="fs-4 fw-bold">{{ low_stock_products }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm text-center bg-white">
-                <i class="bi bi-x-circle"></i>
-                <div>Out of Stock</div>
-                <h3>{{ out_of_stock }}</h3>
+        <!-- Pending Approvals -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-info bg-opacity-10 text-info p-3">
+                            <i class="bi bi-clipboard-check fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Out of Stock</div>
+                            <div class="fs-4 fw-bold">{{ out_of_stock|default:0 }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 
 
     <!-- SECOND ROW -->
     <div class="row g-4 mt-1">
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm text-center bg-white">
-                <i class="bi bi-arrow-left-right"></i>
-                <div>Today's Transactions</div>
-                <h3>{{ todays_transactions  }}</h3>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-info bg-opacity-10 text-info p-3">
+                            <i class="bi bi-clipboard-check fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Today's Transactions</div>
+                            <div class="fs-4 fw-bold">{{ todays_transactions|default:0 }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

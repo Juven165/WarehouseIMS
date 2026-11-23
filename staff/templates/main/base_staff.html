@@ -164,8 +164,24 @@
             <h3>Warehouse IMS</h3>
         </div>
 
-        <div class="right-section d-flex">
+        <div class="right-section d-flex align-items-center gap-3">
+            <a href="{% url 'staff_profile' %}" class="text-decoration-none d-flex align-items-center">
+                {% if request.user.profile.profile_picture %}
+                    <img src="{{ request.user.profile.profile_picture.url }}"
+                         class="rounded-circle"
+                         style="width: 38px; height: 38px; object-fit: cover; border: 2px solid #e5e7eb;"
+                         alt="Profile">
+                {% else %}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                         style="width: 38px; height: 38px; font-size: 16px; font-weight: 600;">
+                        {{ request.user.profile.full_name|default:request.user.username|first|upper }}
+                    </div>
+                {% endif %}
+            </a>
 
+            <a href="{% url 'login' %}" class="btn btn-danger">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
         </div>
     </div>
     <div class="sidebar">
@@ -224,8 +240,8 @@
             <i class="bi bi-calendar-check"></i> Stock Transactions History
         </a>
 
-        <a href="#"
-            class="{% if request.resolver_match.url_name == '' %}active{% endif %}">
+        <a href="{% url 'staff_profile' %}"
+            class="{% if request.resolver_match.url_name == 'staff_profile' %}active{% endif %}">
             <i class="bi bi-person"></i> Profile
         </a>
     </div>

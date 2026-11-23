@@ -1,0 +1,16 @@
+{% extends 'main/base_staff.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="mb-4">
+            <h3 class="fw-semibold mb-1">
+                Notifications
+                <span class="badge bg-primary ms-2">{{ notification.count }}</span>
+            </h3>
+            <h6 class="fw-semibold mb-0">Welcome, {{ user.username }}</h6>
+            <p class="text-muted small">Stay updated on delivery update all the time</p>
+        </div>
+    </div>
+{% endblock %}

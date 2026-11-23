@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.db.models import F, Q
 from staff.forms import AddProductForm, AddCategoryForm, AddSupplierForm
-from staff.models import Product, StockTransaction, Category, Supplier
+from staff.models import Product, StockTransaction, Category, Supplier, Notification
 from accounts.models import Profile
 from accounts.forms import ProfileForm
 from datetime import datetime
@@ -499,3 +499,34 @@ def profile(request):
         'forms': forms,
         'profile': profile,
     })
+
+@staff_member_required
+def notification(request):
+    notifications = Notification.objects.filter(
+        recipient = request.user
+    ).order_by('-created_at')
+    
+    unread_notif = notifications.filter(is_read=False).count
+
+    return render(request, 'admin/notification.html', {
+        'notifications': notifications,
+        'unread_notif': unread_notif
+    })
+
+@staff_member_required
+def mark_as_read(request, notif_id):
+    notification = get_object_or_404(Notification, pk=notif_id, recipient=request.user)
+
+    notification.is_read = True
+    notification.save()
+
+    return redirect('notification')
+
+@staff_member_required
+def mark_all_as_read(request):
+    Notification.objects.filter(
+        recipient=request.user,
+        is_read=False
+    ).update(is_read=True)
+
+    return redirect('notification')

@@ -4,8 +4,10 @@ from django.db.models import Sum, F, Q
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
-from staff.models import Product, StockTransaction, Category, Supplier
+from staff.models import Product, StockTransaction, Category, Supplier, Notification
 from .forms import StockInForm, StockOutForm, AdjustmentForm, AddProductForm, AddCategoryForm
+from accounts.forms import ProfileForm
+from accounts.models import Profile
 from datetime import datetime
 from django.utils.timezone import make_aware
 
@@ -567,5 +569,28 @@ def add_category(request):
         'form': form
     })
 
+@login_required
 def staff_profile(request):
-    pass
+    profile, create = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid:
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('staff_profile')
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'staff/staff_profile.html', {
+        'form': form,
+        'profile': profile,
+    })
+
+@login_required
+def staff_notif(request):
+    notification = Notification.objects.filter(recipient=request.user).order_by('-created_at')
+    unread_notif = notification.filter(is_read=False)
+    return render(request, 'staff/staff_notif.html', {
+        'notification': notification,
+        'unread_notif': unread_notif,
+    })
