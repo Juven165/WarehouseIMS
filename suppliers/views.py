@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
-from staff.models import StockTransaction, Supplier
+from staff.models import StockTransaction, Supplier, Notification, Product
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from staff.forms import SubmitInventoryForm
-from datetime import datetime
+from accounts.models import CustomUser
 from django.contrib import messages
 
 
@@ -96,11 +96,14 @@ class SupplierMyDeliveries(LoginRequiredMixin, TemplateView):
 
 
 @login_required
-def submit_inventory(request):
+def submit_inventory(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
     if request.method == 'POST':
         form = SubmitInventoryForm(request.POST)
         if form.is_valid():
             delivery = form.save(commit=False)
+            delivery.product = product
             delivery.transaction_type = "Stock In"
             delivery.status = "Pending"
 
@@ -109,13 +112,32 @@ def submit_inventory(request):
 
             delivery.save()
 
+            # Notify the staff (product creator)
+            if product.created_by:
+                Notification.objects.create(
+                    recipient=product.created_by,
+                    title="New product delivery",
+                    message=f"{request.user.profile.full_name or request.user.username} requested '{product.name}'."
+                )
+
+            # Notify all admins
+            admins = CustomUser.objects.filter(is_superuser=True)
+            for admin in admins:
+                Notification.objects.create(
+                    recipient=admin,
+                    title="New delivery request",
+                    message=f"{request.user.profile.full_name or request.user.username} requested '{product.name}'."
+                )
+
             messages.success(request, "Delivery submitted successfully!")
-            return redirect('submit_inventory')
+            return redirect('my_report')
+
     else:
         form = SubmitInventoryForm()
 
     return render(request, 'supplier/submit_inventory.html', {
-        'form': form
+        'form': form,
+        'product': product,
     })
 
 @login_required

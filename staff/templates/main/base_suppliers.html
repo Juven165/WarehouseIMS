@@ -137,7 +137,7 @@
             <i class="bi bi-truck"></i> My Deliveries
         </a>
 
-        <a href="{% url 'submit_inventory' %}"
+        <a href="{% url 'submit_inventory' product.id %}"
             class="{% if request.resolver_match.url_name == 'submit_inventory' %}active{% endif %}">
             <i class="bi bi-send-plus"></i> Submit Delivery
         </a>
