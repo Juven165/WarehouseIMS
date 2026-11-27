@@ -1,0 +1,48 @@
+{% extends 'main/base_suppliers.html' %}
+
+{% block title %}Select Product | Warehouse IMS{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h3>Select Product</h3>
+    <p>Choose a product to submit your delivery request.</p>
+
+    <div class="row">
+
+        {% for product in products %}
+
+            <div class="col-md-4 mb-3">
+
+                <div class="card p-3">
+
+                    <h5>{{ product.name }}</h5>
+
+                    <p>SKU: {{ product.sku }}</p>
+
+                    <p>Current Stock: {{ product.current_stock }}</p>
+
+                    <a href="{% url 'submit_inventory' product.id %}"
+                       class="btn btn-primary">
+
+                        <i class="bi bi-send-plus"></i>
+                        Submit Delivery
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <p>No products available.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

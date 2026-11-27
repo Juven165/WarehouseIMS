@@ -94,15 +94,17 @@ class SupplierMyDeliveries(LoginRequiredMixin, TemplateView):
 
         return context
 
-
 @login_required
-def submit_inventory(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+def submit_inventory(request):
 
     if request.method == 'POST':
         form = SubmitInventoryForm(request.POST)
+
         if form.is_valid():
             delivery = form.save(commit=False)
+
+            product = form.cleaned_data['product']
+
             delivery.product = product
             delivery.transaction_type = "Stock In"
             delivery.status = "Pending"
@@ -122,6 +124,7 @@ def submit_inventory(request, product_id):
 
             # Notify all admins
             admins = CustomUser.objects.filter(is_superuser=True)
+
             for admin in admins:
                 Notification.objects.create(
                     recipient=admin,
@@ -137,7 +140,6 @@ def submit_inventory(request, product_id):
 
     return render(request, 'supplier/submit_inventory.html', {
         'form': form,
-        'product': product,
     })
 
 @login_required
@@ -176,3 +178,4 @@ def my_report(request):
     return render(request, 'supplier/my_report.html', {
         'reports': reports
     })
+

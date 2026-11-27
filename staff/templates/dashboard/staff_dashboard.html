@@ -1,5 +1,4 @@
 {% extends 'main/base_staff.html' %}
-
 {% load static %}
 
 {% block title %}Staff Dashboard | Warehouse IMS{% endblock %}
@@ -7,39 +6,21 @@
 {% block content %}
 <div class="container-fluid">
 
-    <div class="title">
+    <div class="title mb-4">
         <div class="text-group">
             <h3>Staff Dashboard</h3>
-            <div class="warehouse">
-                Warehouse IMS
-            </div>
+            <div class="warehouse text-muted">Warehouse IMS</div>
         </div>
     </div>
 
+    <!-- Stats Cards -->
     <div class="row g-3">
-        <!-- Total Users -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-3">
-                            <i class="bi bi-people-fill fs-4"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted small">Total Products</div>
-                            <div class="fs-4 fw-bold">{{ total_products }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Total Products -->
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 bg-success bg-opacity-10 text-success p-3">
+                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-3">
                             <i class="bi bi-box-seam fs-4"></i>
                         </div>
                         <div>
@@ -61,20 +42,20 @@
                         </div>
                         <div>
                             <div class="text-muted small">Low Stock Products</div>
-                            <div class="fs-4 fw-bold">{{ low_stock_products }}</div>
+                            <div class="fs-4 fw-bold">{{ low_stock_products|default:0 }}</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pending Approvals -->
+        <!-- Out of Stock -->
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 bg-info bg-opacity-10 text-info p-3">
-                            <i class="bi bi-clipboard-check fs-4"></i>
+                        <div class="rounded-3 bg-danger bg-opacity-10 text-danger p-3">
+                            <i class="bi bi-x-circle-fill fs-4"></i>
                         </div>
                         <div>
                             <div class="text-muted small">Out of Stock</div>
@@ -84,12 +65,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
-
-    <!-- SECOND ROW -->
-    <div class="row g-4 mt-1">
-
+        <!-- Today's Transactions -->
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
@@ -107,56 +84,77 @@
         </div>
     </div>
 
-    <h3 class="mt-4 mb-3">Recent Transactions</h3>
+    <!-- Recent Transactions -->
+    <h5 class="mt-4 mb-3">Recent Transactions</h5>
 
-    <div class="table-responsive">
-        <table class="table align-middle text-center">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Product</th>
-                    <th>Supplier</th>
-                    <th>Type</th>
-                    <th>Quantity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for app in recent_transactions %}
-                <tr>
-                    <td>{{ app.transaction_date|date:"M d, Y h:i A" }}</td>
-                    <td>{{ app.product.name }}</td>
-                    <td>
-                        {% if app.product.supplier %}
-                            {{ app.product.supplier.name }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </td>
-                    <td>{{ app.get_transaction_type_display }}</td>
-                    <td>{{ app.quantity }}</td>
-
-                    <td>
-                        <a href="{% url 'view_transactions' app.id %}"
-                           class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-eye"></i>
-                        </a>
-
-                        <a href="{% url 'delete_transactions' app.id %}"
-                           class="btn btn-sm btn-outline-danger"
-                           onclick="return confirm('Delete this transaction?')">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="text-muted">No recent transactions.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table align-middle text-center mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Supplier</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in recent_transactions %}
+                        <tr>
+                            <td>{{ app.transaction_date|date:"M d, Y h:i A" }}</td>
+                            <td>{{ app.product.name }}</td>
+                            <td>
+                                {% if app.supplier %}
+                                    {{ app.supplier.name }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge
+                                    {% if app.transaction_type == 'Stock In' %}bg-success
+                                    {% elif app.transaction_type == 'Stock Out' %}bg-danger
+                                    {% else %}bg-info{% endif %}">
+                                    {{ app.get_transaction_type_display }}
+                                </span>
+                            </td>
+                            <td>{{ app.quantity }}</td>
+                            <td>
+                                {% if app.status == 'Approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif app.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif app.status == 'Rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ app.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'view_trans' app.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'delete_transactions' app.id %}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Delete this transaction?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-muted py-4">No recent transactions.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 </div>
