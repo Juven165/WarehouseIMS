@@ -214,3 +214,4 @@ class AddSupplierForm(forms.ModelForm):
                 'class': 'form-check-input',
             }),
         }
+

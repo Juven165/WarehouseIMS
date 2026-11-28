@@ -5,6 +5,7 @@ urlpatterns = [
     path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('delete-transaction/<int:trans_id>/', views.delete_transactions, name='delete_transaction'),
     path('view-transaction/<int:trans_id>/', views.view_transactions, name='view_transaction'),
+    path('recent-activity/', views.recent_activity, name='recent_activity'),
     path('user-list/', views.user_list, name='user_list'),
     path('activate/<int:user_id>/', views.activate, name='activate'),
     path('deactivate/<int:user_id>/', views.deactivate, name='deactivate'),

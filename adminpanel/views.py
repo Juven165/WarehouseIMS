@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db.models import F, Q
 from staff.forms import AddProductForm, AddCategoryForm, AddSupplierForm
 from staff.models import Product, StockTransaction, Category, Supplier, Notification
-from accounts.models import Profile
+from accounts.models import Profile, CustomUser
 from accounts.forms import ProfileForm
 from datetime import datetime
 
@@ -530,3 +530,29 @@ def mark_all_as_read(request):
     ).update(is_read=True)
 
     return redirect('notification')
+
+@staff_member_required
+def recent_activity(request):
+    role_filter = request.GET.get('role', '')
+    q = request.GET.get('q', '').strip()
+
+    users = CustomUser.objects.all().order_by('-date_joined')
+
+    if role_filter:
+        users = users.filter(role=role_filter)
+
+    if q:
+        users = users.filter(
+            Q(email__icontains=q) |
+            Q(username__icontains=q) |
+            Q(first_name__icontains=q) |
+            Q(last_name__icontains=q)
+        )
+
+    context = {
+        'users': users,
+        'role_filter': role_filter,
+        'q': q,
+        'total_count': users.count(),
+    }
+    return render(request, 'admin/recent_activity.html', context)
